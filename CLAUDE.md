@@ -78,12 +78,47 @@ bundle into **Try Windows XT** on the
 [published workshop](https://astrobleem.github.io/mygithubpage/windows-xt/).
 Import does not start the guest. Keep the accepted local preview unchanged.
 
-Host parsing, archive/config checks and synthetic FAT tests passed. No native
-or browser guest has been executed from this converted bundle. Actual Windows
-real-mode boot, input, paging/palette, audible PSG, restart and persistence
-recovery still need qualification. Supported browser inventory was empty;
-both in-app-browser and Chrome creation returned unavailable in this execution
-environment. Do not substitute unsupported input automation.
+## Verified native startup/probe — 2026-10-11
+
+The automatic preparation command above and its offline counterpart produced
+the identical bundle hash recorded above. Host parsing, archive/config checks
+and all 67 host checks passed. A fresh extraction of that actual upstream-derived
+bundle then passed a native guarded Windows 3.0 startup/probe/return test. It did
+not mount or reuse the already-accepted private installation.
+
+All 204 payload files matched the archive before probe instrumentation. The
+existing bundled FONTPRB.EXE was started through a temporary private WIN.INI
+`run=` entry; executable, driver, font and guard bytes were unchanged. The
+existing TSSETUP/WINXT path launched `WIN.COM /R`. The Win16 probe reported
+320x200, completed native Windows API/dialog calls and wrote `DONE=1` plus two
+distinct 32,768-byte guest framebuffer captures. It called ExitWindows from
+its own timer; the guarded launcher returned to DOS and the emulator exited 0
+without a timeout. No host input automation or synthetic screenshot was used.
+
+Thirteen actual runtime queries matched Tandy, memsize=0, memsizekb=640,
+normal/8086_prefetch, fixed 10,000 cycles, no FPU/XMS/EMS/UMB, serialmouse,
+Tandy sound on and nosound=false. Preflight MEM reported 624 KiB conventional,
+32 KiB used and 592 KiB free. Post-return hashes verified restored WIN.INI,
+SYSTEM.INI and WIN.COM, the six checked Windows core modules, RESERVE.COM,
+WINXT.BAT, TSTART.BAT and FONTPRB.EXE. The original bundle hash was unchanged.
+GetWinFlags was not directly sampled; the mode evidence is `WIN.COM /R`, the
+observed 8086-prefetch configuration and completed Win16 execution.
+
+The native executable was DOSBox-X 2025.12.01, SHA-256
+`769fb38a5a94475488be2107856d9a9fcca65487df35676188f5c2ccd5a2e964`.
+The shared lease was acquired at 03:15:28.5909107 UTC and released at
+03:15:40.3622749 UTC. A later process inventory found zero emulators. Actual
+logs, configuration queries, hash manifests and framebuffer captures remain
+private; this documentation contains result metadata only.
+
+This result covers native Tandy startup/probe/return using built-in emulator
+DOS 5.00, an extracted filesystem and dummy SDL video/audio. It does not boot
+the upstream PC DOS MBR or test the pinned browser WASM engine. Browser startup,
+live keyboard/mouse, audible PSG, paging/palette, physical hardware, browser
+restart/persistence and the compiler workflow remain unqualified. It provides
+no PCjr qualification. Supported browser inventory was empty; in-app-browser
+and Chrome creation returned unavailable in this execution environment. Do not
+substitute unsupported input automation.
 
 Before any guest run, obtain a bounded allocation from the local operator for
 the shared exclusive lock at
