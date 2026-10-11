@@ -16,6 +16,12 @@ Its PCjs JSON disk format is not a js-dos archive; selecting it as a media
 bundle here will not work. It does not include this project's Windows XT
 driver, fonts or guarded Tandy startup.
 
+Claude can prepare that exact upstream disk automatically with the private
+fixture helper in [CLAUDE.md](../CLAUDE.md#automatically-prepare-the-referenced-upstream-disk-privately).
+It validates the pinned disk and accepted private Windows XT overlay, then
+writes a new private bundle outside the public repository. No guest is started
+by preparation. Host conversion passed; guest qualification remains pending.
+
 The Foxlum code license is GPLv3; current PCjs code is MIT. Neither establishes
 a Microsoft license grant for the contained Windows/PC DOS media. No Microsoft
 media is mirrored by this site. This distinction does not prevent linking the

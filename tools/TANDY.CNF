@@ -1,0 +1,36 @@
+[sdl]
+fullscreen=false
+[dosbox]
+machine=tandy
+memsize=0
+memsizekb=640
+allow more than 640kb base memory=false
+[cpu]
+core=normal
+cputype=8086_prefetch
+cycles=fixed 10000
+fpu=false
+[dos]
+xms=false
+ems=false
+umb=false
+[mixer]
+nosound=false
+rate=44100
+[speaker]
+pcspeaker=false
+tandy=on
+[serial]
+serial1=serialmouse
+[render]
+aspect=false
+scaler=none
+doublescan=false
+[autoexec]
+@echo off
+mount c .
+c:
+set PATH=C:\WINDOWS;C:\WINDOWS\SYSTEM;Z:\
+set TEMP=C:\WINDOWS\TEMP
+if not exist C:\WINXT\SHREADY.TAG call C:\WINXT\TSSETUP.BAT
+call C:\WINXT\WINXT.BAT

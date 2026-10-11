@@ -12,6 +12,7 @@ emulators.pathPrefix=path.join(root,'windows-xt/vendor')+path.sep;
 const fixture=new Uint8Array(fs.readFileSync(path.join(root,'tests/FIXTURE.zip')));
 const before=await sha256(fixture);
 assert.equal(windowsConfig({}),CONFIGS.xt);
+assert.equal(fs.readFileSync(path.join(root,'tools/TANDY.CNF'),'utf8').replace(/\r\n/g,'\n'),CONFIGS.xt);
 for(const profile of [{machine:'svga_s3'},{machine:'pcjr'},{machine:'pcjr',launcher:'../X.BAT'},{machine:'pcjr',launcher:'PCJR/X%PATH%.BAT'},{machine:'pcjr',launcher:'PCJR/X.BAT & WIN'},{machine:'pcjr',launcher:'C:/X.BAT'}])assert.throws(()=>validateProfile(profile));
 const profile=validateProfile({machine:'pcjr',launcher:'pcjr\\startjr.bat'});
 assert.deepEqual(profile,{machine:'pcjr',launcher:'PCJR/STARTJR.BAT'});
@@ -30,4 +31,4 @@ assert.ok(decode(prompt.files[1].contents).includes('call C:\\PCJR\\STARTJR.BAT>
 const launch=await emulators.bundleUpdateConfig(fixture,{dosboxConf:guarded.config,jsdosConf:{version:'8'}});
 assert.equal((await emulators.bundleConfig(launch)).dosboxConf,guarded.config);
 requireLauncher(launch,profile);assert.equal(await sha256(fixture),before);
-console.log('PASS 7 profile/launcher/archive safety checks; no DOS guest instantiated.');
+console.log('PASS 8 profile/launcher/archive safety checks; no DOS guest instantiated.');
