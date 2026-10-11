@@ -1,0 +1,4 @@
+# Keep audited deployment bytes and SRI hashes identical on all hosts.
+* -text
+# Preserve upstream generated wrapper whitespace with its audited runtime bytes.
+windows-xt/vendor/* whitespace=-blank-at-eol,-blank-at-eof

@@ -1,0 +1,12 @@
+node_modules/
+evidence/
+private/
+.private/
+*.jsdos
+*.xtworkspace
+*.img
+*.ima
+*.vhd
+*.iso
+__pycache__/
+tests/FIXTURE.zip

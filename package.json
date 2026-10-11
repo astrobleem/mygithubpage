@@ -1,0 +1,13 @@
+{
+  "name": "windows-xt-browser-workshop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "license": "GPL-2.0",
+  "scripts": {
+    "test": "python tools/check-public.py && python tests/make-fixture.py && node tests/verify.mjs && node tests/verify-input.mjs && node tests/verify-shortcuts.mjs && node tests/verify-diagnostics.mjs && node --experimental-vm-modules tests/verify-app-bootstrap.mjs && node tests/verify-csp.mjs && node tests/verify-profiles.mjs && python tests/test-workspace.py"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "6.2.5"
+  }
+}

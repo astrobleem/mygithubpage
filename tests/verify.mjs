@@ -1,0 +1,57 @@
+// Host checks: no browser, DOSBox guest, host input, or emulator lease.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {SCHEMA,DEFAULT_SOURCE,CONFIGS,dosPath,asciiSource,sha256,verifyRecord,encodeRecovery,decodeRecovery,buildBatch,isMZ,keyCode,flattenTree} from '../windows-xt/core.mjs';
+import {WorkspaceStore} from '../windows-xt/storage.mjs';
+import 'fake-indexeddb/auto';
+const root=path.resolve(import.meta.dirname,'..');
+const fixturePath=path.join(root,'tests/FIXTURE.zip');
+const latest={bundles:[{path:fixturePath},{path:fixturePath}]};
+const checks=[];
+function pass(name){checks.push({name,status:'PASS'});}
+const storage=new WorkspaceStore('host-validation-'+Date.now());
+const first=await storage.put({kind:'xt',schema:SCHEMA,marker:'first'},0);
+assert.equal(first.revision,1);assert.equal((await storage.get('xt')).marker,'first');
+await assert.rejects(storage.put({kind:'xt',marker:'stale overwrite'},0),/Another tab/);
+assert.equal((await storage.get('xt')).marker,'first');pass('Transactional revision guard preserves saved data against stale tab overwrite (in-memory IndexedDB)');
+const next=await storage.put({...first,marker:'next'},1);assert.equal(next.revision,2);
+await storage.put({kind:'build',marker:'compiler'},0);assert.equal((await storage.get('xt')).marker,'next');assert.equal((await storage.get('build')).marker,'compiler');pass('Separate guest records and monotonic save revisions (in-memory IndexedDB)');
+const db=await storage.open();
+await new Promise(resolve=>{const transaction=db.transaction('workspaces','readwrite');transaction.objectStore('workspaces').put({kind:'xt',marker:'aborted'});transaction.onabort=resolve;transaction.abort();});
+assert.equal((await storage.get('xt')).marker,'next');pass('Aborted IndexedDB write leaves previous save intact (in-memory IndexedDB)');
+const base=new Uint8Array(fs.readFileSync(latest.bundles[1].path));
+const snapshot=new Uint8Array([80,75,3,4,1,2,3]);
+const record={schema:SCHEMA,kind:'build',name:'test-local.jsdos',base,baseHash:await sha256(base),snapshot,snapshotHash:await sha256(snapshot),previous:null,source:DEFAULT_SOURCE,backend:'dosboxWorker'};
+const round=decodeRecovery(encodeRecovery(record));
+assert.deepEqual(round.base,base);assert.deepEqual(round.snapshot,snapshot);assert.equal(round.source,DEFAULT_SOURCE);
+await verifyRecord(round,'build');pass('Recovery serialization preserves exact synthetic bytes and source');
+await assert.rejects(verifyRecord({...round,kind:'xt'},'build'));pass('Cross-workspace recovery refused');
+const damaged=new Uint8Array(snapshot);damaged[4]^=1;
+await assert.rejects(verifyRecord({...round,snapshot:damaged},'build'));pass('Corrupt current snapshot refused before commit');
+await assert.rejects(verifyRecord({...round,previous:damaged,previousHash:record.snapshotHash},'build'));pass('Corrupt previous snapshot refused');
+await assert.rejects(verifyRecord({...round,baseHash:'0'.repeat(64)},'build'));pass('Altered base bundle refused');
+assert.throws(()=>decodeRecovery('{"base":"../../x"}'));pass('Malformed recovery payload refused');
+for(const value of ['../../WINDOWS/SYSTEM.INI','C:/WORK/../HELLO.C','WORK/LONGFILENAME.EXE','/WORK//HELLO.C','WORK/x.exe/..','D:/X.EXE'])assert.throws(()=>dosPath(value));
+assert.equal(dosPath('c:\\work\\hello.exe'),'WORK/HELLO.EXE');pass('DOS 8.3 path confinement, traversal and drive rejection');
+assert.throws(()=>asciiSource('int main(void) { /* ü */ }'));assert.throws(()=>asciiSource('x'.repeat(262145)));
+assert.equal(new TextDecoder().decode(asciiSource('x\ny\r\nz\r')),'x\r\ny\r\nz\r\n');pass('ASCII DOS source encoding and size limit');
+const batch=new TextDecoder().decode(buildBatch('0123456789abcdef01234567'));
+assert.ok(batch.includes('-bt=dos -ms -0'));assert.ok(batch.indexOf('del HELLO.EXE')<batch.indexOf('wcl '));
+assert.ok(batch.includes('if errorlevel 1 goto FAIL'));assert.ok(batch.includes('0123456789abcdef01234567>BUILD.OK'));assert.throws(()=>buildBatch('anything & unsafe'));
+pass('Build request targets 8088 and separates fresh success from failure');
+assert.equal(keyCode({code:'ArrowLeft'}),263);assert.equal(keyCode({code:'Enter'}),257);assert.equal(keyCode({code:'ControlRight'}),345);assert.equal(keyCode({code:'KeyA'}),65);pass('Documented guest key mapping');
+assert.deepEqual(flattenTree({name:'',nodes:[{name:'WORK',nodes:[{name:'HELLO.EXE',nodes:null,size:1}]}]}),['WORK/HELLO.EXE']);pass('Guest work-file tree interpretation');
+assert.ok(CONFIGS.xt.includes('[serial]\nserial1=serialmouse'));assert.ok(!CONFIGS.build.includes('serialmouse'));assert.ok(CONFIGS.xt.includes('cputype=8086_prefetch'));assert.ok(CONFIGS.xt.includes('memsizekb=640'));assert.ok(CONFIGS.xt.includes('ems=false'));assert.ok(CONFIGS.build.includes('cputype=386'));assert.ok(CONFIGS.build.includes('memsize=16'));pass('Separate runtime and compiler profiles');
+const require=createRequire(import.meta.url);require(path.join(root,'windows-xt/vendor/emulators.js'));
+globalThis.emulators.pathPrefix=path.join(root,'windows-xt/vendor')+path.sep;
+for(const entry of latest.bundles){
+  const bytes=new Uint8Array(fs.readFileSync(entry.path));assert.equal(await sha256(bytes),await sha256(bytes));
+  const config=await emulators.bundleConfig(bytes);assert.equal(config.jsdosConf.version,'8');assert.ok(config.dosboxConf.includes('machine=tandy'));
+}
+pass('Synthetic fixture bundles decode through the pinned official bundleConfig API without starting a guest');
+const mockExe=new Uint8Array(28);mockExe[0]=0x4d;mockExe[1]=0x5a;assert.ok(isMZ(mockExe));assert.ok(!isMZ(new Uint8Array(28)));pass('MZ signature acceptance and rejection on synthetic bytes; no real executable is shipped or run');
+const report={schema:1,status:'HOST CHECKS PASS; RUNTIME PENDING',checks,emulatorsVersion:emulators.version,guestExecuted:false,browserUsed:false,sharedLeaseAcquired:false};
+fs.mkdirSync(path.join(root,'evidence'),{recursive:true});fs.writeFileSync(path.join(root,'evidence/HOST-CHECKS.json'),JSON.stringify(report,null,2));
+console.log(JSON.stringify({status:report.status,passed:checks.length,emulatorsVersion:emulators.version,guestExecuted:false},null,2));

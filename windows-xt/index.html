@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self'; img-src 'self' blob: data:; style-src 'self'; media-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Windows XT — Try it. Make something.</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="runtime-loader.js" defer></script>
+  <script src="vendor/emulators.js" defer></script>
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <header class="masthead"><a href="#" class="brand"><span class="mark" aria-hidden="true">XT</span> Windows XT</a><span class="badge">Browser workshop · experimental</span></header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">A little computer. A lot of possibility.</p>
+      <h1>Try it.<br><span>Make something.</span></h1>
+      <p class="intro">Windows 3.0, Tandy colors, and the tools to make a DOS program of your own. Two separate workspaces, right in your browser.</p>
+      <div class="choices" role="group" aria-label="Choose a workspace">
+        <button id="choose-xt" class="choice active" aria-pressed="true"><span class="choice-icon" aria-hidden="true">▦</span><strong>Try Windows XT</strong><small>Explore the Tandy desktop</small></button>
+        <button id="choose-build" class="choice" aria-pressed="false"><span class="choice-icon" aria-hidden="true">&gt;_</span><strong>Build something</strong><small>Edit C. Build an 8088 EXE.</small></button>
+      </div>
+    </section>
+
+    <section class="workspace" aria-label="Emulator workspace">
+      <div class="window-title"><span id="workspace-title">Try Windows XT</span><span id="guest-state">Stopped</span></div>
+      <div class="workspace-grid">
+        <div class="screen-column">
+          <div id="screen-wrap" class="screen-wrap">
+            <canvas id="screen" width="640" height="400" tabindex="0" role="application" aria-label="DOS guest screen. Click to focus keyboard and mouse."></canvas>
+            <div id="screen-placeholder"><span class="large-mark" aria-hidden="true">XT</span><p>Your own Windows, in your browser.</p><small>Import a local media bundle to begin.</small></div>
+          </div>
+          <div class="toolbar">
+            <button id="start">Start guest</button><button id="pause" disabled>Pause</button><button id="stop" disabled>Save &amp; stop</button><button id="restart" disabled>Save &amp; restart</button><button id="sound" disabled>Enable sound</button>
+          </div>
+          <p class="hint">Tab enters or leaves the screen. Capture mouse keeps movement inside the guest; Escape releases it. Use Send Escape to pass Escape to DOS.</p>
+          <div class="toolbar minor"><button id="guest-start" disabled>Open Start (guest)</button><button id="guest-tab" disabled>Send Tab</button><button id="mouse-capture" disabled>Capture mouse</button><button id="escape" disabled>Send Escape</button><button id="enter" disabled>Send Enter</button><button id="capture" disabled>Download screen</button><button id="diagnostics">Download diagnostic report</button></div>
+          <p id="status" role="status" aria-live="polite">Import your local Windows XT bundle. Files stay in this browser.</p>
+        </div>
+        <aside>
+          <h2 id="media-title">Your Windows XT media</h2>
+          <p id="media-help">Use your owned Windows 3.0 files in a prepared .jsdos or ZIP bundle. Windows and compiler media stay local.</p>
+          <label class="file-button">Import media bundle<input id="media" type="file" accept=".jsdos,.zip"></label>
+          <p id="media-info" class="file-info">No bundle imported.</p>
+          <label class="field" id="backend-field">Compiler backend<select id="backend"><option value="dosboxWorker">DOSBox (candidate faster compiler)</option><option value="dosboxXWorker">DOSBox-X</option></select></label>
+          <div class="save-controls"><button id="save" disabled>Save workspace</button><button id="export">Export recovery file</button><label class="file-button secondary">Import recovery file<input id="recovery" type="file" accept=".xtworkspace"></label><button id="recover">Recover previous save</button></div>
+          <button id="export-saved" disabled>Export last saved recovery</button>
+          <p class="hint">A save keeps guest files and your editor draft. Export last saved recovery works without a guest response and contains the last explicit save. Keep private media downloads private.</p>
+          <details><summary>Move files through C:\WORK</summary><p>Return to the DOS prompt before importing. Use a DOS 8.3 filename. To move your EXE to Windows XT, download it from the compiler, switch workspaces, exit Windows, and import it here.</p><label class="file-button secondary">Import a guest file<input id="guest-import" type="file" disabled></label><button id="refresh-files" disabled>Refresh work files</button><label class="field">Work file<select id="work-files" aria-label="Guest work files"></select></label><button id="file-download" disabled>Export selected guest file</button></details>
+          <details id="profile-field"><summary>Experimental machine / custom guard</summary><p>Tandy is the accepted default. PCjr backend support is present; PCjr Windows operation is unqualified. Supply your own verified reservation and launcher. No experimental driver or probe is included.</p><label class="field">Machine<select id="xt-machine"><option value="tandy">Tandy · default</option><option value="pcjr">PCjr · experimental</option></select></label><label class="field">Custom guarded launcher<input id="xt-launcher" type="text" maxlength="120" placeholder="PCJR/STARTJR.BAT"></label><p class="hint">Leave the launcher empty for the standard Tandy WINXT guard. A PCjr profile requires an existing BAT file in your imported bundle.</p></details>
+          <label id="boot-field" class="field">Windows XT startup<select id="boot-mode"><option value="guarded">Guarded Windows XT with boot trace</option><option value="prompt">Diagnostic DOS prompt</option></select><button id="launch-xt" disabled>Launch guarded Windows XT</button></label>
+          <details open><summary>Guest diagnostics</summary><p id="diagnostic-state">No guest queries yet. A static frame or silent PCM alone does not establish a CPU stall.</p><pre id="guest-log">Startup stdout will appear here.</pre><p class="hint">Download diagnostic report includes bounded worker queries, boot-stage files and the actual guest screen. Keep private guest reports local.</p></details>
+          <details><summary>What is being tested?</summary><p id="proof-note">A user observed the private desktop, working mouse and Solitaire. Tandy paging, palette and audible PSG still need targeted qualification. A rendered frame or nonzero audio signal alone is not a compatibility pass.</p><p>Emulated cycles are uncalibrated. Separate compiler speed does not represent a physical 8088.</p></details>
+        </aside>
+      </div>
+    </section>
+
+    <section id="editor-panel" class="editor-panel" hidden>
+      <div class="editor-title"><h2>A small program, made by you.</h2><span>C89 · small model · 8086 / 8088 output</span></div>
+      <p>Import your DOS-hosted Open Watcom tool bundle, then start the compiler guest. Its 386 CPU and 16 MB of memory serve the compiler; <code>-0</code> targets the built program at an 8088.</p>
+      <label class="source-label" for="source">C:\WORK\HELLO.C</label>
+      <textarea id="source" spellcheck="false" aria-label="C source editor"></textarea>
+      <div class="toolbar"><label class="file-button secondary">Import C source<input id="source-import" type="file" accept=".c,.txt"></label><button id="source-download">Download source</button><button id="source-save" disabled>Save source to guest</button><button id="build" disabled>Build EXE</button><button id="run" disabled>Run built EXE</button><button id="exe" disabled>Download built EXE</button></div>
+      <label class="source-label" for="build-log">Build output</label><pre id="build-log" tabindex="0">No build has run.</pre>
+      <p class="hint">Current MSC6 / DDK driver recipes require their original tools and ABI. This workspace has no claim that those recipes build unchanged with Watcom.</p>
+    </section>
+    <section class="upstream"><h2>The original Windows image</h2><p>The repository we started from contains a PCjs JSON disk for Windows 3.0. You can open the existing upstream demo directly. It uses an IBM AT with EGA; the Windows XT and compiler workspaces above use their own local bundles.</p><p><a href="https://www.pcjs.org/software/pcx86/sys/windows/3.00/" target="_blank" rel="noreferrer">Open original Windows 3.0 demo</a> · <a href="https://github.com/Foxlum/pcjs-wiki/blob/master/disks/pcx86/fixed/20mb/PCDOS320-WIN300-EGA.json" target="_blank" rel="noreferrer">Original repository image</a> · <a href="README.md">Private workspace instructions</a></p></section>
+    <footer><p>Local media. Real guest code. Evidence before claims.</p><a href="https://github.com/astrobleem/oemdisplay-tandy" target="_blank" rel="noreferrer">Windows XT source</a><a href="THIRD-PARTY.md">Emulator source &amp; licenses</a></footer>
+  </main>
+</body>
+</html>

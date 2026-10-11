@@ -1,0 +1,47 @@
+{
+  "archive": "emulators-8.5.2-source.tar.gz",
+  "bytes": 15737758,
+  "sha256": "27e34229c390923ab82996152ec4d10acbbb739ce6b52168cfe981d61cd0a619",
+  "pins": [
+    {
+      "name": "emulators",
+      "repo": "js-dos/emulators",
+      "commit": "6bbf0925d221a7304ea8e0dda1e89b8dc01569b2",
+      "url": "https://codeload.github.com/js-dos/emulators/tar.gz/6bbf0925d221a7304ea8e0dda1e89b8dc01569b2",
+      "bytes": 2122391,
+      "sha256": "9b7354c2cc853681b99eb288bcdc7e5e0ff7fd2e821485c9b20c12472fbc822e"
+    },
+    {
+      "name": "dosbox",
+      "repo": "js-dos/dosbox",
+      "commit": "528578d5a6f76afd4d5ef4e722b5670826f1183a",
+      "url": "https://codeload.github.com/js-dos/dosbox/tar.gz/528578d5a6f76afd4d5ef4e722b5670826f1183a",
+      "bytes": 1244943,
+      "sha256": "797efaf22246bbc5b2e6be0a6c791a58addd2bca330e0aa93232780a77e06019"
+    },
+    {
+      "name": "sokol",
+      "repo": "floooh/sokol",
+      "commit": "fa3d7cbe9ca85b8b87824ac366c724cb0e33a6af",
+      "url": "https://codeload.github.com/floooh/sokol/tar.gz/fa3d7cbe9ca85b8b87824ac366c724cb0e33a6af",
+      "bytes": 1254380,
+      "sha256": "78ee7eabc7a13885079e3a0593e31c70302ac869df4a4e3662f676eb383adce9"
+    },
+    {
+      "name": "gl4es",
+      "repo": "ptitSeb/gl4es",
+      "commit": "a744af14d4afbda77bf472bc53f43b9ceba39cc0",
+      "url": "https://codeload.github.com/ptitSeb/gl4es/tar.gz/a744af14d4afbda77bf472bc53f43b9ceba39cc0",
+      "bytes": 50997759,
+      "sha256": "a21c879d340ba18660d3f244925ba6fd5f62aa83932eacf4eb6ce0f6774ce5e6"
+    },
+    {
+      "name": "dosbox-x",
+      "repo": "js-dos/dosbox-x",
+      "commit": "788fde99d3d451eab3621009186e5abe516f2b9c",
+      "retrieval": "Git source-only sparse checkout; include/ and src/ plus build/license inputs"
+    }
+  ],
+  "files": 2373,
+  "omitted_non_worker_media_files": 143
+}

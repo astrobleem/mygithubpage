@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "status": "PASS PUBLIC ALLOWLIST AND SOURCE HASHES",
+  "files": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "path": "PSG.C",
+      "bytes": 951,
+      "sha256": "77e31c53362ffddbb37db9e791b437138671fdf4e929f6ffaef57125ec3c00ae"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5903,
+      "sha256": "6805e136a73d8ca199937bfd807c9a9846bcb6601e05f44e1d7801f9de2ac371"
+    },
+    {
+      "path": "THIRD-PARTY.md",
+      "bytes": 2743,
+      "sha256": "e668faf93209c7679cbdb300fcf6c154dfc078b649d391065dde35df83aa202e"
+    },
+    {
+      "path": "app.mjs",
+      "bytes": 32488,
+      "sha256": "418cc5b183d13c26f78037fdb18c2278a9886b4e9bcdd3c93cebc1e103316b93"
+    },
+    {
+      "path": "core.mjs",
+      "bytes": 6501,
+      "sha256": "26bfb9df6eb11f75d3796214241ddab7b85aac4e32b910755bf29fe5b4b3380d"
+    },
+    {
+      "path": "diagnostics.mjs",
+      "bytes": 5415,
+      "sha256": "4436eb0b147b8d2e4563a7da107582c86069275c0bc474710728a404021d7869"
+    },
+    {
+      "path": "index.html",
+      "bytes": 9520,
+      "sha256": "076c377fefb5bc31f874e164c248cb536d87a62d6562b9c8a81a0c05dacaec5a"
+    },
+    {
+      "path": "input.mjs",
+      "bytes": 3697,
+      "sha256": "8ae6fc9044044f271e5427f51833341e8fbf9afbc821264d0209850efcee78c2"
+    },
+    {
+      "path": "profiles.mjs",
+      "bytes": 1840,
+      "sha256": "674e2e6e5d03a56e524228ee721cbc65ea7209c20147a7bc304cded55e916267"
+    },
+    {
+      "path": "runtime-loader.js",
+      "bytes": 2278,
+      "sha256": "f1f8d656957d02af738d1a34ac6a86eaf9a825817c83de35b5faf9ea97f868aa"
+    },
+    {
+      "path": "shortcuts.mjs",
+      "bytes": 775,
+      "sha256": "160fec9f3a6fd6cca3ec03f50d5b84a5d6671841fd1644f233f9ee409c7a537c"
+    },
+    {
+      "path": "source/MANIFEST.json",
+      "bytes": 1869,
+      "sha256": "f057284011e11f46b914227f4576fefd010f3d56b50286f9e4a92c3530f2cb36"
+    },
+    {
+      "path": "source/emulators-8.5.2-source.tar.gz",
+      "bytes": 15737758,
+      "sha256": "27e34229c390923ab82996152ec4d10acbbb739ce6b52168cfe981d61cd0a619"
+    },
+    {
+      "path": "storage.mjs",
+      "bytes": 1844,
+      "sha256": "afa9818faca4515f088b290fcb0489c8ac9c70b8b7d129ac4d65db066484fda5"
+    },
+    {
+      "path": "style.css",
+      "bytes": 6322,
+      "sha256": "699d631ac173f8d78368075d4ecddd615d1e7a7c234b64872a8a67cb36f2c0b4"
+    },
+    {
+      "path": "vendor/LICENSE",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    {
+      "path": "vendor/emulators.js",
+      "bytes": 90549,
+      "sha256": "e06b0b647c54aed3fa003f96bec6ee69263e5947139081ad070163a81f19c3ce"
+    },
+    {
+      "path": "vendor/package.json",
+      "bytes": 3287,
+      "sha256": "43656dec9f7967be212e519d9f4884020c4f85ad7e66406961e8efab4206c3cc"
+    },
+    {
+      "path": "vendor/wdosbox-x.js",
+      "bytes": 285747,
+      "sha256": "9278e53df2108727b581c9fe1347b9c729663a803a9c0eecb7cd80469fe8c5e1"
+    },
+    {
+      "path": "vendor/wdosbox-x.wasm",
+      "bytes": 8045933,
+      "sha256": "8e6bbbee26a70433c3a78d0f3a3152a8d7762d016cd2024f6f13d69e93e9f689"
+    },
+    {
+      "path": "vendor/wdosbox.js",
+      "bytes": 114906,
+      "sha256": "d824c0684085f4a9bab9126abb2ce01ef30243efeaec940b7ebfaeb5dc605a51"
+    },
+    {
+      "path": "vendor/wdosbox.wasm",
+      "bytes": 1459535,
+      "sha256": "b33afba80de1a420c123086e5952d135de041f9e85d4444170e29d9249ec049c"
+    },
+    {
+      "path": "vendor/wlibzip.js",
+      "bytes": 72957,
+      "sha256": "b8e55c2aa4c96e961c9965f289c0f40b5d44f02a557dcf980ddc29787b493842"
+    },
+    {
+      "path": "vendor/wlibzip.wasm",
+      "bytes": 112483,
+      "sha256": "25064d970c42ca7ea0fdb8b058204d6e41cc8826a676219677772f5591e8337b"
+    }
+  ],
+  "source_files": 2373,
+  "private_media_included": false,
+  "guest_executed": false
+}
