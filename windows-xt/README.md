@@ -73,11 +73,33 @@ preview have separate browser origins and therefore separate save stores.
 
 Pinned DOSBox-X recognizes `machine=pcjr` and contains its paging/video and
 PSG implementations. The advanced machine field exposes that backend option;
-it does not qualify Windows operation, hardware fidelity or the PCjr driver.
+browser WASM operation and physical hardware remain unqualified.
 A PCjr selection requires an existing custom guarded BAT launcher in your
 private bundle. The app checks the path and presence, not reservation safety.
-It does not include or run JRGUARD, JRPROBE or T2PROBE. Their reviewed branch
-has unresolved reservation/mapping issues and must not serve as safe defaults.
+It does not include or run JRGUARD, JRPROBE or T2PROBE.
+
+The review of [experimental branch commit f8c77a96](https://github.com/astrobleem/oemdisplay-tandy/commit/f8c77a96f8c422d7377e2b210e7aad19d4ae0079)
+confirmed the original release-packaging and destructive mapping/ownership
+findings are resolved within the documented emulator scope. The branch has
+[native DOSBox-X PCjr GUI captures](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/docs/PCJR.MD#first-windows-30-boot-on-an-emulated-pcjr)
+showing Windows 3.0, Program Manager, Solitaire, DOS exit and a second load.
+Successful guard-before-relaunch evidence is incomplete:
+[WINJR05](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/docs/pcjr/WINJR05.PNG)
+shows JRGUARD failing with `Bad command or filename`.
+
+Two checker P2 findings remain at that reviewed commit:
+
+- [JRCHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/src/pcjr/JRCHECK.PY#L85)
+  accepts an unrelated all-zero B800 dump as a valid alias.
+- [T2CHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/src/tga2/T2CHECK.PY#L46)
+  accepts a correct pattern with contradictory unsafe mapping fields.
+
+Real PCjr hardware, expanded DOS memory layout and memory drivers, the actual
+keyboard path, Paintbrush save/reopen and physical-page MODETEST remain pending.
+The review still requests changes on the whole branch. These native captures
+do not qualify this workshop's browser PCjr guest or establish that all checks
+pass. Plantronics in the same reviewed branch is accepted only as isolated
+conversion/build groundwork; Windows and actual ColorPlus runtime are untested.
 
 For your own independently verified experimental payload, package a separate
 private copy using `--machine pcjr --launcher PCJR/STARTJR.BAT`, select the same
@@ -94,8 +116,11 @@ on the earlier accepted preview. The exact running revision was not independentl
 captured. Public release host checks cover configuration archive ordering,
 input forwarding, bounded diagnostics, save/recovery corruption handling and
 strict CSP loading. They create no DOS guest and are not browser qualification.
-Targeted real-mode, paging, palette, audible PSG, compiler build/download,
-browser restart and persistence recovery remain to be tested. Diagnostic
+A fresh upstream-derived Tandy bundle separately passed native guarded Windows
+startup, the bundled 320x200 Win16 probe and DOS return; [CLAUDE.md](../CLAUDE.md)
+records that result and its dummy-SDL/internal-DOS limits. Browser startup,
+paging, palette, audible PSG, compiler build/download, browser restart and
+persistence recovery remain to be tested. Diagnostic
 downloads contain actual guest data and screens; keep them private.
 
 ## Local serving and source

@@ -11,8 +11,8 @@ Never add `unsafe-eval` or bypass browser CSP protections.
 
 Use `tools/make-workspace.py` only on a separate private guest copy. The helper
 does not build, install or execute software. Standard Tandy guards are kept;
-an experimental PCjr profile needs your own verified guarded BAT. Reviewed
-PCjr probes and guards are not supplied as safe defaults.
+an experimental PCjr profile needs your own verified guarded BAT. Consult the
+review scope and remaining PCjr limits below before selecting that profile.
 
 Run host checks before changing publication. Coordinate emulator execution
 with the local operator and their exclusive guest-slot mechanism first.
@@ -129,3 +129,26 @@ Acquire the existing lock with the approved build-kit lease mechanism; never
 remove the lock, stop another process or infer an allocation from inactivity.
 Browser input/audio qualification additionally requires working supported
 browser controls. Keep all resulting guest evidence private.
+
+## Reviewed PCjr and Plantronics scope
+
+At [reviewed commit f8c77a96f8c422d7377e2b210e7aad19d4ae0079](https://github.com/astrobleem/oemdisplay-tandy/commit/f8c77a96f8c422d7377e2b210e7aad19d4ae0079),
+the original packaging regression and destructive mapping/ownership findings
+are resolved within the documented emulator scope. Experimental native PCjr
+GUI boot evidence exists, including Windows desktop/Solitaire, DOS exit and a
+second Windows load. Guard-before-relaunch is still unproven: WINJR05 shows
+JRGUARD failing with `Bad command or filename`. See the
+[workshop's precise limits and evidence links](windows-xt/README.md#pcjr-experiments).
+
+Two checker P2s remain: JRCHECK accepts an unrelated zero B800 alias dump, and
+T2CHECK accepts contradictory unsafe mapping fields with a correct pattern.
+The whole branch still has a request-changes verdict. Real hardware, expanded
+DOS memory layout/memory drivers, the PCjr keyboard path, Paintbrush save/reopen
+and physical-page MODETEST remain pending. Do not describe all checks as passing
+or infer browser-WASM qualification from the native captures.
+
+Plantronics is accepted only as isolated conversion/build groundwork. Windows
+and actual ColorPlus runtime are untested. Existing Tandy media, guards and
+published runtime stay separate from these experimental payloads. This workshop
+continues to require an independently verified private PCjr guarded launcher;
+it supplies no experimental driver/probe/guard or private Windows media.

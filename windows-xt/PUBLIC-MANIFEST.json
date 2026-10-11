@@ -19,8 +19,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6322,
-      "sha256": "43914737d1f0aecba639c0c4e419dd923aac316451cb333b38fe0658e72e30a0"
+      "bytes": 8169,
+      "sha256": "d4d5af91361a646e4008053c71dc58842ae93b7b9c2942e38fac575037be46d2"
     },
     {
       "path": "THIRD-PARTY.md",
@@ -44,8 +44,8 @@
     },
     {
       "path": "index.html",
-      "bytes": 9520,
-      "sha256": "076c377fefb5bc31f874e164c248cb536d87a62d6562b9c8a81a0c05dacaec5a"
+      "bytes": 9724,
+      "sha256": "79bd1372d024e0e9e9853e4fb979cd8d30b3ceb9d78976cec4b97a8eb3f74218"
     },
     {
       "path": "input.mjs",
