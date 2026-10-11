@@ -132,20 +132,23 @@ browser controls. Keep all resulting guest evidence private.
 
 ## Reviewed PCjr and Plantronics scope
 
-At [reviewed commit f8c77a96f8c422d7377e2b210e7aad19d4ae0079](https://github.com/astrobleem/oemdisplay-tandy/commit/f8c77a96f8c422d7377e2b210e7aad19d4ae0079),
+At [reviewed commit 5c28f8d4e678fac45a8299ca164fa96b8c421278](https://github.com/astrobleem/oemdisplay-tandy/commit/5c28f8d4e678fac45a8299ca164fa96b8c421278),
 the original packaging regression and destructive mapping/ownership findings
 are resolved within the documented emulator scope. Experimental native PCjr
 GUI boot evidence exists, including Windows desktop/Solitaire, DOS exit and a
-second Windows load. Guard-before-relaunch is still unproven: WINJR05 shows
-JRGUARD failing with `Bad command or filename`. See the
+second Windows load. All three former P2s are resolved: corrected checker
+safety/alias conditions and a guarded cycle whose script/log match WINJR07
+and WINJR08's second GUI evidence. The reviewer accepts experimental PCjr/TGA-II
+groundwork, with no independent native replay. See the
 [workshop's precise limits and evidence links](windows-xt/README.md#pcjr-experiments).
 
-Two checker P2s remain: JRCHECK accepts an unrelated zero B800 alias dump, and
-T2CHECK accepts contradictory unsafe mapping fields with a correct pattern.
-The whole branch still has a request-changes verdict. Real hardware, expanded
-DOS memory layout/memory drivers, the PCjr keyboard path, Paintbrush save/reopen
-and physical-page MODETEST remain pending. Do not describe all checks as passing
-or infer browser-WASM qualification from the native captures.
+Reviewer checks passed CHKTEST 19/19, independent adversarial fixtures 29/29,
+and rc.6 publisher plus 12 publication rejection fixtures. The old checker
+versions failed exactly seven new regression cases. Real hardware, real PC DOS
+with expanded memory and memory-manager/driver layouts, the PCjr keyboard path, Paintbrush save/reopen
+and physical-page MODETEST remain pending. TGA-II needs a positive mapping/write
+result on suitable hardware. Do not infer browser-WASM or hardware qualification
+from the native captures and host checks.
 
 Plantronics is accepted only as isolated conversion/build groundwork. Windows
 and actual ColorPlus runtime are untested. Existing Tandy media, guards and

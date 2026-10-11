@@ -78,27 +78,37 @@ A PCjr selection requires an existing custom guarded BAT launcher in your
 private bundle. The app checks the path and presence, not reservation safety.
 It does not include or run JRGUARD, JRPROBE or T2PROBE.
 
-The review of [experimental branch commit f8c77a96](https://github.com/astrobleem/oemdisplay-tandy/commit/f8c77a96f8c422d7377e2b210e7aad19d4ae0079)
-confirmed the original release-packaging and destructive mapping/ownership
-findings are resolved within the documented emulator scope. The branch has
-[native DOSBox-X PCjr GUI captures](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/docs/PCJR.MD#first-windows-30-boot-on-an-emulated-pcjr)
+The review accepts [commit 5c28f8d4](https://github.com/astrobleem/oemdisplay-tandy/commit/5c28f8d4e678fac45a8299ca164fa96b8c421278)
+as experimental PCjr/TGA-II groundwork. The original release-packaging and
+destructive mapping/ownership findings are resolved within the documented
+emulator scope. The branch has
+[native DOSBox-X PCjr GUI captures](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/docs/PCJR.MD#first-windows-30-boot-on-an-emulated-pcjr)
 showing Windows 3.0, Program Manager, Solitaire, DOS exit and a second load.
-Successful guard-before-relaunch evidence is incomplete:
-[WINJR05](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/docs/pcjr/WINJR05.PNG)
-shows JRGUARD failing with `Bad command or filename`.
 
-Two checker P2 findings remain at that reviewed commit:
+All three former P2 findings are resolved at that reviewed commit:
 
-- [JRCHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/src/pcjr/JRCHECK.PY#L85)
-  accepts an unrelated all-zero B800 dump as a valid alias.
-- [T2CHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/f8c77a96f8c422d7377e2b210e7aad19d4ae0079/src/tga2/T2CHECK.PY#L46)
-  accepts a correct pattern with contradictory unsafe mapping fields.
+- [JRCHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/src/pcjr/JRCHECK.PY#L89)
+  requires the B800 alias to match a half of the verified physical page.
+- [T2CHECK](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/src/tga2/T2CHECK.PY#L49)
+  requires the positive mapping/safety fields as well as correct pixels.
+- [JRCYCLE.BAT](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/docs/pcjr/JRCYCLE.BAT#L5)
+  calls `C:\JRGUARD.COM` before both Windows starts and after final exit,
+  stopping on guard failure. Its log matches
+  [WINJR07](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/docs/pcjr/WINJR07.PNG);
+  [WINJR08](https://github.com/astrobleem/oemdisplay-tandy/blob/5c28f8d4e678fac45a8299ca164fa96b8c421278/docs/pcjr/WINJR08.PNG)
+  supports the second GUI session.
 
-Real PCjr hardware, expanded DOS memory layout and memory drivers, the actual
+Reviewer verification passed CHKTEST 19/19 and independent adversarial fixtures
+29/29; the old checkers failed exactly seven new regression cases. The rc.6
+publisher and 12 publication rejection fixtures passed. The reviewer inspected
+the guarded cycle script, log and captures; no independent native replay ran.
+
+Real PCjr hardware, real PC DOS with expanded memory and memory-manager/driver
+layouts, the actual
 keyboard path, Paintbrush save/reopen and physical-page MODETEST remain pending.
-The review still requests changes on the whole branch. These native captures
-do not qualify this workshop's browser PCjr guest or establish that all checks
-pass. Plantronics in the same reviewed branch is accepted only as isolated
+These native captures do not qualify this workshop's browser PCjr guest.
+TGA-II still needs a positive mapping/write result on suitable hardware.
+Plantronics in the same reviewed branch is accepted only as isolated
 conversion/build groundwork; Windows and actual ColorPlus runtime are untested.
 
 For your own independently verified experimental payload, package a separate
