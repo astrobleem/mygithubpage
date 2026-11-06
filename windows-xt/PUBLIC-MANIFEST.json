@@ -43,9 +43,69 @@
       "sha256": "4436eb0b147b8d2e4563a7da107582c86069275c0bc474710728a404021d7869"
     },
     {
+      "path": "fonts/font.js",
+      "bytes": 5028,
+      "sha256": "c2525421d7b594b27ab53693737777b09332b6778edac718ca7efa77b56b6d82"
+    },
+    {
+      "path": "fonts/fonts/LICENSE.TXT",
+      "bytes": 1101,
+      "sha256": "b7b5b82f34c6a21e5f680e983af2dc628b9bd913363a7ffc6087cd1486201c80"
+    },
+    {
+      "path": "fonts/fonts/XTCFIX.FON",
+      "bytes": 4208,
+      "sha256": "3c02c48996d3f8bc9d5a1825bfee966ca4da97ed3e8331472dc78cbe2a63a971"
+    },
+    {
+      "path": "fonts/fonts/XTCOEM.FON",
+      "bytes": 4560,
+      "sha256": "8fc600059c0246a1b43c1af47bef17a34df844b3ae21369ce53b9ecc8ccc3055"
+    },
+    {
+      "path": "fonts/fonts/XTCSYS.FON",
+      "bytes": 4592,
+      "sha256": "c45b5d313109fe0b5fa6e665344accd5fa9de4a5ef35c0f416fe8ca1d83c1326"
+    },
+    {
+      "path": "fonts/fonts/XTEFIX.FON",
+      "bytes": 4656,
+      "sha256": "3c7ac7c82a987d75445f6e3c9e2a9afa650689a20cab573b8f661a37287b142c"
+    },
+    {
+      "path": "fonts/fonts/XTEOEM.FON",
+      "bytes": 4560,
+      "sha256": "8fc600059c0246a1b43c1af47bef17a34df844b3ae21369ce53b9ecc8ccc3055"
+    },
+    {
+      "path": "fonts/fonts/XTESYS.FON",
+      "bytes": 5680,
+      "sha256": "50af47922fb4df487ecfbfb77a744dbdc315f521365b8fd089a71b6c5c6c6946"
+    },
+    {
+      "path": "fonts/fonts/XTTSYS.FON",
+      "bytes": 4208,
+      "sha256": "dbc26ad717340070b4da1948d97eb5ba24528e0a5cd0853199884d6cca8d51aa"
+    },
+    {
+      "path": "fonts/index.html",
+      "bytes": 6512,
+      "sha256": "e61df724e56e87993570e844477af1578a85dbf30342eeebe6829560be8b7e15"
+    },
+    {
+      "path": "fonts/style.css",
+      "bytes": 6945,
+      "sha256": "6214f2848e0d584be5bcd149729ad0c6e262ad9044a0c728594f173a046239eb"
+    },
+    {
+      "path": "fonts/viewer.js",
+      "bytes": 12517,
+      "sha256": "244f459a840facbd7209d0cab4820eb90398cdea1336789ef9a942f1c3897561"
+    },
+    {
       "path": "index.html",
-      "bytes": 9724,
-      "sha256": "a34361fbbe65d5b9e24daac302b9d997e91e3fa5b699c8db119fe06e8a6ebc31"
+      "bytes": 9936,
+      "sha256": "99b05bcf1eee8f267ddabac60812fa882d7d5c281be33efd70c8ec15a77e4697"
     },
     {
       "path": "input.mjs",

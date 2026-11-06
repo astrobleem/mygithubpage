@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="description" content="Try the original XT Pixels bitmap fonts shipped with Windows XT. Inspect every byte and preview your own text, pixel for pixel.">
+  <title>XT Pixels · Windows XT font viewer</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="font.js"></script>
+  <script defer src="viewer.js"></script>
+</head>
+<body>
+  <header class="site-header"><a href="../">WINDOWS XT</a><span>FONT LAB / 01</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">SMALL FONTS. EVERY PIXEL COUNTS.</p><h1>XT Pixels<span class="cursor" aria-hidden="true">_</span></h1>
+      <p class="lede">The original bitmap fonts inside Windows XT.<br>Type something. Zoom in. Meet every character.</p>
+      <p class="badge">7 shipped font files <span>·</span> Original bitmap pixels <span>·</span> MIT licensed</p>
+    </div>
+    <noscript><p class="notice">JavaScript is needed for the interactive preview. You can still <a href="https://github.com/astrobleem/oemdisplay-tandy/tree/main/docs/FONTS">view the font specimens on GitHub</a>.</p></noscript>
+    <p id="load-status" class="notice" role="status">Loading the font files…</p>
+    <section class="workbench" aria-label="Font preview">
+      <div class="controls">
+        <label for="font">Font file</label>
+        <select id="font" disabled>
+          <option value="XTCSYS">System · 8 px · XTCSYS</option>
+          <option value="XTCFIX">Fixed · 8 × 8 · XTCFIX</option>
+          <option value="XTCOEM">OEM · 8 × 8 · XTCOEM</option>
+          <option value="XTESYS">System · 12 px · XTESYS</option>
+          <option value="XTEFIX">Fixed · 8 × 10 · XTEFIX</option>
+          <option value="XTEOEM">OEM · 8 × 8 · XTEOEM</option>
+          <option value="XTTSYS">Text System · 8 × 8 · XTTSYS</option>
+        </select>
+        <div class="control-pair"><div><label for="scale">Zoom</label><select id="scale"><option value="1">1× · native pixels</option><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option><option value="6">6×</option></select></div>
+          <div><label for="theme">Paper</label><select id="theme"><option value="paper">Warm white</option><option value="terminal">Green terminal</option><option value="windows">Windows blue</option></select></div></div>
+        <label for="sample">Your text <span class="label-note">1,000 characters max</span></label>
+        <textarea id="sample" rows="6" maxlength="1000" spellcheck="false">Windows XT
+The quick brown fox jumps
+over the lazy dog.
+0123456789  !?&amp;@#%</textarea>
+        <div class="presets" aria-label="Sample text"><button type="button" data-sample="desktop">Desktop</button><button type="button" data-sample="alphabet">Alphabet</button><button type="button" data-sample="oem">Box drawing</button></div>
+        <p id="missing" class="small" role="status"></p>
+      </div>
+      <div class="preview-panel"><div class="panel-bar"><span>LIVE PREVIEW</span><span id="preview-size"></span></div>
+        <div class="preview-scroll" tabindex="0" aria-label="Text preview; scroll for long lines"><canvas id="preview" role="img" aria-label="Bitmap font preview"></canvas></div>
+        <div class="font-description"><h2 id="font-title">System</h2><p id="font-description"></p><dl id="metrics"></dl>
+          <a id="download" class="download" href="fonts/XTCSYS.FON" download>Download XTCSYS.FON <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+    <section class="glyph-section" aria-labelledby="glyph-heading">
+      <div class="section-title"><div><p class="eyebrow">A CLOSER LOOK</p><h2 id="glyph-heading">Every byte, on display.</h2></div><p>Click a tile to inspect its pixels.<br>Hexadecimal byte values, 00–FF.</p></div>
+      <div class="glyph-layout"><div class="atlas-wrap"><div id="atlas" class="atlas" aria-label="Character byte tiles"></div></div>
+        <aside class="inspector"><p class="eyebrow" id="glyph-byte">BYTE 41</p><canvas id="glyph-preview" role="img" aria-label="Selected character pixels"></canvas><h3 id="glyph-name"></h3><p id="glyph-info" class="small"></p>
+          <label for="byte">Inspect a byte (hex)</label><input id="byte" value="41" maxlength="2" pattern="[0-9a-fA-F]{1,2}" aria-describedby="byte-help"><p id="byte-help" class="small">00 to FF. Arrow keys move between tiles.</p>
+        </aside>
+      </div>
+    </section>
+    <section class="compare-section" aria-labelledby="compare-heading"><div class="section-title"><div><p class="eyebrow">SIDE BY SIDE</p><h2 id="compare-heading">Same words. Seven files.</h2></div><p>Your first line in every font, at 2×.</p></div><div id="comparisons" class="comparisons"></div></section>
+    <section class="notes"><h2>What you’re seeing</h2><p>These previews decode the actual XT Pixels R10 .FON files shipped with Windows XT. They use the fonts’ original glyph widths, cell heights and external leading. Zoom is an integer scale with square pixels, not a CRT aspect-ratio simulation or a Windows screenshot.</p>
+      <p>System and Fixed use early Windows ANSI; OEM uses CP437, including box drawing and control pictures. Characters absent from a font use its original fallback: a box for ANSI, a space for OEM. Euro and emoji are not included. The byte grid shows the exact result of all 256 byte inputs, including substitutions.</p>
+      <p>XTEOEM and XTCOEM are intentionally byte-identical. XTTSYS is the fixed text-mode System font; this preview does not imply that experimental text-mode display is visually qualified.</p>
+      <p><a href="https://github.com/astrobleem/oemdisplay-tandy/tree/main/tools/XTFONTS">Font source &amp; generator</a> <span>·</span> <a href="https://github.com/astrobleem/oemdisplay-tandy/blob/main/docs/FONTS/README.MD">Native specimens &amp; coverage</a> <span>·</span> <a href="fonts/LICENSE.TXT">MIT license</a></p>
+    </section>
+  </main>
+  <footer><span>WINDOWS XT / XT PIXELS</span><a href="../">Back to the workshop ↗</a></footer>
+</body>
+</html>

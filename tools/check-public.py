@@ -8,6 +8,12 @@ ALLOWED={'.nojekyll','index.html','style.css','core.mjs','profiles.mjs','app.mjs
  'vendor/emulators.js','vendor/wdosbox.js','vendor/wdosbox.wasm','vendor/wdosbox-x.js','vendor/wdosbox-x.wasm','vendor/wlibzip.js','vendor/wlibzip.wasm','vendor/LICENSE','vendor/package.json',
  'source/emulators-8.5.2-source.tar.gz','source/MANIFEST.json','PUBLIC-MANIFEST.json'}
 
+# Only the seven published original MIT fonts are allowed as resource-only MZ files.
+FONT_NAMES = ('XTCSYS', 'XTCFIX', 'XTCOEM', 'XTESYS', 'XTEFIX', 'XTEOEM', 'XTTSYS')
+FONT_FILES = {'fonts/fonts/' + name + '.FON' for name in FONT_NAMES}
+ALLOWED |= FONT_FILES | {'fonts/index.html', 'fonts/style.css', 'fonts/font.js',
+                       'fonts/viewer.js', 'fonts/fonts/LICENSE.TXT'}
+
 def check(write=False):
     found={p.relative_to(SITE).as_posix() for p in SITE.rglob('*') if p.is_file()}
     assert found-{ 'PUBLIC-MANIFEST.json' }==ALLOWED-{'PUBLIC-MANIFEST.json'}, {'unexpected':sorted(found-ALLOWED),'missing':sorted(ALLOWED-found-{'PUBLIC-MANIFEST.json'})}
@@ -15,7 +21,7 @@ def check(write=False):
     for name in sorted(found-{'PUBLIC-MANIFEST.json'}):
         data=(SITE/name).read_bytes()
         if not name.startswith(('vendor/','source/')):
-            assert not data.startswith(b'MZ')
+            assert not data.startswith(b'MZ') or name in FONT_FILES
             assert b'C:\\Users\\' not in data and b'E:\\budmaker' not in data, name
         entries.append({'path':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
     source=json.loads((SITE/'source/MANIFEST.json').read_text())
