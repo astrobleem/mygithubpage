@@ -36,6 +36,7 @@ assert.ok(read('fonts/XTCOEM.FON').equals(read('fonts/XTEOEM.FON')));
 assert.equal(fontAPI.encode('╔═╗☺',fontAPI.parse(read('fonts/XTCOEM.FON'))).lines[0].join(','),'201,205,187,1');
 const html=read('index.html').toString();
 assert.match(html,/script-src 'self';/);assert.ok(!html.includes('unsafe-eval'));
+assert.match(html,/src="font\.js\?v=2"/);assert.match(html,/src="viewer\.js\?v=2"/);assert.match(html,/href="style\.css\?v=2"/);
 assert.match(html,/href="\.\.\/"/);assert.match(html,/maxlength="1000"/);
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
 class Element {
