@@ -44,8 +44,43 @@
     },
     {
       "path": "fonts/font.js",
-      "bytes": 5028,
-      "sha256": "c2525421d7b594b27ab53693737777b09332b6778edac718ca7efa77b56b6d82"
+      "bytes": 13692,
+      "sha256": "6c7374d3e4e8fea1aad531cb324142560b53b61723a088ab9d35998bb3ac71cf"
+    },
+    {
+      "path": "fonts/fonts/CG1COUR.FON",
+      "bytes": 3536,
+      "sha256": "dd934962d877c96bc493a053a3a7337584583f7f8da54ce718a4cb5bf5cfbbaa"
+    },
+    {
+      "path": "fonts/fonts/CG1FIX.FON",
+      "bytes": 3776,
+      "sha256": "b64dcb5805764590006d20efb2e86ab36e0d4af7e7ca17ff4424d09b3fc54d52"
+    },
+    {
+      "path": "fonts/fonts/CG1HELV.FON",
+      "bytes": 3536,
+      "sha256": "80e221bd6626d5ec723ce7b723a33ea3a041f7dc8dd17e2498af5afe53917c9d"
+    },
+    {
+      "path": "fonts/fonts/CG1OEM.FON",
+      "bytes": 4080,
+      "sha256": "be15090c5be5e6271ee6e245b2d45e27a606aa8294c710ef9837c749ce265f06"
+    },
+    {
+      "path": "fonts/fonts/CG1SYS.FON",
+      "bytes": 3536,
+      "sha256": "d18469da312eb99858843e73c939896d392824d83e9ee28efc4cd2e13529ee40"
+    },
+    {
+      "path": "fonts/fonts/CG2HELV.FON",
+      "bytes": 3760,
+      "sha256": "d1f6878faaf8abd06f425d7672277d6eb6d1097f9994c738ba753655d125afc3"
+    },
+    {
+      "path": "fonts/fonts/CG2SYS.FON",
+      "bytes": 3760,
+      "sha256": "c0ac9e8753e6b13b5bf0faa5384c85daf94427d813485a47270a62333bbfd222"
     },
     {
       "path": "fonts/fonts/LICENSE.TXT",
@@ -89,23 +124,23 @@
     },
     {
       "path": "fonts/index.html",
-      "bytes": 6512,
-      "sha256": "e61df724e56e87993570e844477af1578a85dbf30342eeebe6829560be8b7e15"
+      "bytes": 8917,
+      "sha256": "777d7c7016a7da46301523c33fa2b184715dfeca827ae7f8509ad2f37ee148db"
     },
     {
       "path": "fonts/style.css",
-      "bytes": 6945,
-      "sha256": "6214f2848e0d584be5bcd149729ad0c6e262ad9044a0c728594f173a046239eb"
+      "bytes": 8817,
+      "sha256": "6e9445a6c62e3d89363cc6f26e0a328f5764e13d2a475e8ff3798023bbd38394"
     },
     {
       "path": "fonts/viewer.js",
-      "bytes": 12517,
-      "sha256": "244f459a840facbd7209d0cab4820eb90398cdea1336789ef9a942f1c3897561"
+      "bytes": 21843,
+      "sha256": "7abda2e9ca2a9262b20a45671e987b78dbc19ec8e09e11227bed66e8e8bf9cd0"
     },
     {
       "path": "index.html",
-      "bytes": 9936,
-      "sha256": "99b05bcf1eee8f267ddabac60812fa882d7d5c281be33efd70c8ec15a77e4697"
+      "bytes": 9939,
+      "sha256": "58fa6adc582134d63ea0e77a8444cc2d446319eae7a0b49145b9ecfa9bcc2715"
     },
     {
       "path": "input.mjs",

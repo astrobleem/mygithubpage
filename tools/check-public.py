@@ -8,8 +8,9 @@ ALLOWED={'.nojekyll','index.html','style.css','core.mjs','profiles.mjs','app.mjs
  'vendor/emulators.js','vendor/wdosbox.js','vendor/wdosbox.wasm','vendor/wdosbox-x.js','vendor/wdosbox-x.wasm','vendor/wlibzip.js','vendor/wlibzip.wasm','vendor/LICENSE','vendor/package.json',
  'source/emulators-8.5.2-source.tar.gz','source/MANIFEST.json','PUBLIC-MANIFEST.json'}
 
-# Only the seven published original MIT fonts are allowed as resource-only MZ files.
-FONT_NAMES = ('XTCSYS', 'XTCFIX', 'XTCOEM', 'XTESYS', 'XTEFIX', 'XTEOEM', 'XTTSYS')
+# Only the published original MIT fonts are allowed as resource-only MZ files.
+FONT_NAMES = ('XTCSYS', 'XTCFIX', 'XTCOEM', 'XTESYS', 'XTEFIX', 'XTEOEM', 'XTTSYS',
+              'CG1SYS', 'CG1HELV', 'CG1COUR', 'CG1FIX', 'CG1OEM', 'CG2SYS', 'CG2HELV')
 FONT_FILES = {'fonts/fonts/' + name + '.FON' for name in FONT_NAMES}
 ALLOWED |= FONT_FILES | {'fonts/index.html', 'fonts/style.css', 'fonts/font.js',
                        'fonts/viewer.js', 'fonts/fonts/LICENSE.TXT'}

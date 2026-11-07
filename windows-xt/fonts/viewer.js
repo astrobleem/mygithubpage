@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const fonts = new Map();
+  const fonts = new Map(), editors = new Map();
   const names = Array.from($('font').options, option => option.value);
   const descriptions = {
     XTCSYS: ['System / 8 px', 'Proportional graphics System font. The XTC family keeps the short cells used by the 200-line profiles.'],
@@ -11,7 +11,14 @@
     XTESYS: ['System / 12 px', 'The taller proportional System strike in the XTE family.'],
     XTEFIX: ['Fixed / 8 × 10', 'The taller fixed-width ANSI strike in the XTE family.'],
     XTEOEM: ['OEM / 8 × 8', 'The XTE OEM alias contains exactly the same font bytes as XTCOEM.'],
-    XTTSYS: ['Text System / 8 × 8', 'The fixed System strike supplied for text-mode use. Previewed here independently of the experimental text-mode display driver.']
+    XTTSYS: ['Text System / 8 × 8', 'The fixed System strike supplied for text-mode use. Previewed independently of experimental text-mode display.'],
+    CG1SYS: ['Compact System / 5 px', 'Proportional 5-row CGA System, averaging 3 pixels wide. ASCII artwork; extended bytes have placeholder boxes.'],
+    CG1HELV: ['Compact Helv / 5 px', 'Proportional 5-row CGA Helv, averaging 3 pixels wide. The smallest UI strike in the current CGA packet.'],
+    CG1COUR: ['Compact Courier / 4 × 5', 'Four-pixel fixed advance and five bitmap rows. Original compact CGA ASCII artwork.'],
+    CG1FIX: ['Compact Fixed / 4 × 6', 'Four-pixel fixed advance and six rows, including room for descenders. ASCII artwork with extended placeholders.'],
+    CG1OEM: ['Compact OEM / 4 × 6', 'ASCII plus full-cell CP437 box drawing, shades and blocks. Other extended and control-picture bytes are placeholder boxes.'],
+    CG2SYS: ['Compact System / 6 px', 'Six-row proportional CGA System. Average width 4 px, with wider M/W forms.'],
+    CG2HELV: ['Compact Helv / 6 px', 'Six-row proportional CGA Helv. ASCII artwork and the original fixed dialog metrics.']
   };
   const themes = {paper: ['#253325', '#fffef7'], terminal: ['#b9f68a', '#17251b'], windows: ['#ffffff', '#000080']};
   const samples = {
@@ -20,7 +27,7 @@
     oem: '╔════════════════════╗\n║     WINDOWS XT     ║\n╠════════════════════╣\n║ ░░▒▒▓▓██  ♥ ♫ ☺    ║\n╚════════════════════╝'
   };
   let selected = 0x41;
-  let current;
+  let current, pointer = null, pixelFocus = 0;
   const hex = byte => byte.toString(16).toUpperCase().padStart(2, '0');
   function paintGlyph(ctx, glyph, x, y, zoom) {
     glyph.rows.forEach((row, gy) => row.forEach((ink, gx) => {
@@ -53,17 +60,62 @@
     });
     return {width, height, clipped: clipped || tooWide};
   }
+  function originalPlaceholder(name, byte, font) {
+    if (!name.startsWith('CG')) return XTFont.character(byte, font.charset) === null;
+    return !(byte >= 32 && byte <= 126 || font.charset === 255 && byte >= 176 && byte <= 223);
+  }
   function describeByte(byte, font) {
     const glyph = font.glyph(byte), char = XTFont.character(byte, font.charset);
     if (glyph.code !== byte) return `Fallback → ${hex(glyph.code)}`;
-    if (char === null) return 'Reserved · fallback box';
+    if (char === null) return 'Reserved byte';
     if (char === ' ') return 'Space';
     if (char === '\u00a0') return 'Nonbreaking space';
     return char;
   }
+  function repaintTile(byte) {
+    const font = fonts.get(current), tile = $('atlas').children[byte];
+    render(tile.querySelector('canvas'), font, [[byte]], 2, themes.paper, 0);
+  }
+  function updateEditor() {
+    if (!current) return;
+    const editor = editors.get(current), font = editor.font, glyph = font.glyph(selected);
+    const editable = glyph.code === selected;
+    $('undo').disabled = !editor.canUndo && !editor.strokeActive;
+    $('redo').disabled = !editor.canRedo || editor.strokeActive;
+    $('reset-glyph').disabled = !editable || !editor.isGlyphDirty(selected);
+    $('reset-font').disabled = editor.dirtyGlyphCount === 0;
+    $('export-font').disabled = false;
+    $('export-font').textContent = `Download ${current}E.FON`;
+    if (!editor.isSaved && $('export-status').textContent.startsWith('Download requested:'))
+      $('export-status').textContent = 'New edits since the last download. Download again to keep them.';
+    const other = [...editors.values()].filter(e => e !== editor && e.dirtyGlyphCount).length;
+    $('edit-status').textContent = `${editor.dirtyGlyphCount} changed glyph${editor.dirtyGlyphCount === 1 ? '' : 's'} · ${editor.dirtyPixelCount} pixels different from original.` +
+      (other ? ` Edits also kept in ${other} other font${other === 1 ? '' : 's'}.` : '');
+    $('edit-warning').textContent = !editable ? `Preview only: byte ${hex(selected)} is outside this font’s range. Select ${hex(glyph.code)} to edit its shared default glyph.` :
+      editor.isGlyphDirty(selected) ? 'Custom glyph. Reset restores its original pixels.' :
+      originalPlaceholder(current, selected, font) ? 'Original placeholder box. You can draw a character in this byte’s cell.' : '';
+    for (const button of $('pixel-grid').children) {
+      const x = Number(button.dataset.x), y = Number(button.dataset.y), ink = glyph.rows[y][x];
+      button.setAttribute('aria-pressed', String(Boolean(ink))); button.disabled = !editable;
+    }
+  }
+  function finishStroke(cancel = false) {
+    if (!pointer) return;
+    const previous = pointer; pointer = null;
+    if (cancel) editors.get(previous.font).cancelStroke();
+    else editors.get(previous.font).commitStroke();
+    if ($('pixel-grid').hasPointerCapture(previous.id)) $('pixel-grid').releasePointerCapture(previous.id);
+    refreshEdits();
+  }
+  function refreshEdits() {
+    updateEditor();
+    // Out-of-range tiles may share the edited default glyph.
+    for (let byte = 0; byte < 256; byte++) repaintTile(byte);
+    renderText();
+  }
   function selectByte(byte, focus = false) {
     if (!current) return;
-    selected = byte;
+    finishStroke(); selected = byte;
     const font = fonts.get(current), glyph = font.glyph(byte);
     for (const tile of $('atlas').children) {
       const active = Number(tile.dataset.byte) === byte;
@@ -74,21 +126,34 @@
     $('glyph-byte').textContent = `BYTE ${hex(byte)} / DEC ${byte}`;
     $('glyph-name').textContent = describeByte(byte, font);
     $('glyph-info').textContent = `${glyph.width} × ${font.height} pixels. Advance ${glyph.width} px. ` +
-      (glyph.code !== byte ? `Outside the advertised range; uses byte ${hex(glyph.code)}.` :
-        `Original bitmap in ${current}.FON.`);
-    const canvas = $('glyph-preview'), scale = 8;
-    canvas.width = (glyph.width + 2) * scale; canvas.height = (font.height + 2) * scale;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#fffef7'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#253325'; paintGlyph(ctx, glyph, scale, scale, scale);
-    ctx.strokeStyle = '#25332520'; ctx.lineWidth = 1;
-    for (let x = scale; x <= (glyph.width + 1) * scale; x += scale) {
-      ctx.beginPath(); ctx.moveTo(x + .5, scale); ctx.lineTo(x + .5, (font.height + 1) * scale); ctx.stroke();
+      (glyph.code !== byte ? `Outside the advertised range; uses byte ${hex(glyph.code)}.` : `${current}.FON · dimensions locked.`);
+    const grid = $('pixel-grid'); grid.replaceChildren(); grid.style.setProperty('--columns', glyph.width);
+    grid.setAttribute('aria-label', `Edit byte ${hex(byte)}, ${describeByte(byte, font)}, ${glyph.width} by ${font.height} pixels`);
+    pixelFocus = Math.min(pixelFocus, glyph.width * font.height - 1);
+    for (let y = 0; y < font.height; y++) for (let x = 0; x < glyph.width; x++) {
+      const button = document.createElement('button'), index = y * glyph.width + x;
+      button.type = 'button'; button.dataset.x = x; button.dataset.y = y;
+      button.setAttribute('aria-label', `Column ${x + 1}, row ${y + 1}`); button.tabIndex = index === pixelFocus ? 0 : -1;
+      button.addEventListener('click', event => {
+        if (event.detail !== 0 || glyph.code !== selected) return; // Pointer strokes are handled on the grid.
+        editors.get(current).setPixel(selected, x, y, 1 - font.glyph(selected).rows[y][x]); refreshEdits();
+      });
+      button.addEventListener('keydown', event => {
+        const moves = {ArrowLeft: -1, ArrowRight: 1, ArrowUp: -glyph.width, ArrowDown: glyph.width};
+        let next = index;
+        if (event.key in moves) next = (index + moves[event.key] + grid.children.length) % grid.children.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = grid.children.length - 1;
+        else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
+          event.preventDefault(); finishStroke(); event.shiftKey ? editors.get(current).redo() : editors.get(current).undo(); refreshEdits(); return;
+        } else return;
+        event.preventDefault(); pixelFocus = next;
+        for (let i = 0; i < grid.children.length; i++) grid.children[i].tabIndex = i === next ? 0 : -1;
+        grid.children[next].focus();
+      });
+      grid.append(button);
     }
-    for (let y = scale; y <= (font.height + 1) * scale; y += scale) {
-      ctx.beginPath(); ctx.moveTo(scale, y + .5); ctx.lineTo((glyph.width + 1) * scale, y + .5); ctx.stroke();
-    }
-    canvas.setAttribute('aria-label', `Byte ${hex(byte)}, ${describeByte(byte, font)}, ${glyph.width} by ${font.height} bitmap pixels`);
+    updateEditor();
   }
   function renderText() {
     if (!current) return;
@@ -98,10 +163,18 @@
     $('preview').parentElement.style.background = colors[1];
     $('preview').setAttribute('aria-label', `${descriptions[current][0]} preview: ${text || '(empty text)'}`);
     $('preview-size').textContent = `${result.width} × ${result.height} px / ${zoom}×`;
-    $('missing').textContent = (encoded.missing.length ?
-      `Not in this font: ${encoded.missing.join(' ')}. Shown as ${font.charset === 255 ? 'blank spaces' : 'fallback boxes'}.` :
-      'All characters in this sample are available.') +
-      (result.clipped ? ' Very long previews are clipped to keep the browser responsive.' : '');
+    const placeholders = new Set();
+    for (const line of encoded.lines) for (const byte of line) {
+      if (originalPlaceholder(current, byte, font) && !editors.get(current).isGlyphDirty(byte)) {
+        const char = XTFont.character(byte, font.charset); if (char) placeholders.add(char);
+      }
+    }
+    const warnings = [];
+    if (encoded.missing.length) warnings.push(`Outside this encoding: ${encoded.missing.join(' ')}. Uses default byte ${hex(font.fallback)} (${describeByte(font.fallback, font)}).`);
+    if (placeholders.size) warnings.push(`Original placeholder boxes: ${[...placeholders].join(' ')}. Edit those bytes to draw them.`);
+    if (!warnings.length) warnings.push('All characters in this sample have drawn glyphs.');
+    if (result.clipped) warnings.push('Very long previews are clipped to keep the browser responsive.');
+    $('missing').textContent = warnings.join(' ');
     const firstLine = text.replace(/\r/g, '').split('\n')[0];
     for (const card of $('comparisons').children) {
       const name = card.dataset.font, comparisonFont = fonts.get(name);
@@ -113,15 +186,15 @@
   function selectFont() {
     const name = $('font').value;
     if (!fonts.has(name)) return;
-    current = name;
+    finishStroke(); current = name; $('export-status').textContent = '';
     const font = fonts.get(name);
     $('font-title').textContent = descriptions[name][0];
     $('font-description').textContent = descriptions[name][1];
-    $('download').href = `fonts/${name}.FON`; $('download').textContent = `Download ${name}.FON ↗`;
+    $('download').href = `fonts/${name}.FON`; $('download').textContent = `Original ${name}.FON ↗`;
     $('metrics').replaceChildren();
     const metrics = [['Cell height', `${font.height} px`], ['Width', font.fixedWidth ? `${font.fixedWidth} px fixed` : 'Proportional'],
       ['Encoding', font.charset === 255 ? 'CP437 / OEM' : 'Win 3.0 ANSI'], ['Ascent', `${font.ascent} px`],
-      ['Leading (int/ext)', `${font.internal} / ${font.external} px`], ['Resource', `FONT ${font.resourceId}`]];
+      ['Leading (int/ext)', `${font.internal} / ${font.external} px`], ['Resource', `FONT ${font.resourceId}`], ['Default byte', hex(font.fallback)], ['Byte range', `${hex(font.first)}–${hex(font.last)}`]];
     for (const [label, value] of metrics) {
       const group = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd');
       dt.textContent = label; dd.textContent = value; group.append(dt, dd); $('metrics').append(group);
@@ -165,8 +238,67 @@
   });
   for (const button of document.querySelectorAll('[data-sample]')) button.addEventListener('click', () => {
     $('sample').value = samples[button.dataset.sample];
-    if (button.dataset.sample === 'oem' && fonts.has('XTCOEM')) { $('font').value = 'XTCOEM'; selectFont(); }
+    if (button.dataset.sample === 'oem' && fonts.has('XTCOEM')) { $('font').value = current?.startsWith('CG') && fonts.has('CG1OEM') ? 'CG1OEM' : 'XTCOEM'; selectFont(); }
     else renderText();
+  });
+  function gridPoint(event) {
+    const rect = $('pixel-grid').getBoundingClientRect(), font = fonts.get(current), glyph = font.glyph(selected);
+    const x = Math.floor((event.clientX - rect.left) * glyph.width / rect.width);
+    const y = Math.floor((event.clientY - rect.top) * font.height / rect.height);
+    return x >= 0 && y >= 0 && x < glyph.width && y < font.height ? {x, y} : null;
+  }
+  function paintTo(point) {
+    if (!point || !pointer) return;
+    const editor = editors.get(current);
+    let {x, y} = pointer.last; const dx = Math.abs(point.x - x), dy = -Math.abs(point.y - y);
+    const sx = x < point.x ? 1 : -1, sy = y < point.y ? 1 : -1; let error = dx + dy;
+    for (;;) {
+      editor.setPixel(selected, x, y, pointer.ink);
+      if (x === point.x && y === point.y) break;
+      const twice = 2 * error;
+      if (twice >= dy) { error += dy; x += sx; }
+      if (twice <= dx) { error += dx; y += sy; }
+    }
+    pointer.last = point; refreshEdits();
+  }
+  $('pixel-grid').addEventListener('pointerdown', event => {
+    if (!current || pointer || event.button !== 0 || fonts.get(current).glyph(selected).code !== selected) return;
+    const point = gridPoint(event); if (!point) return;
+    event.preventDefault();
+    const editor = editors.get(current); editor.beginStroke();
+    pointer = {id: event.pointerId, font: current, last: point, ink: 1 - editor.font.glyph(selected).rows[point.y][point.x]};
+    $('pixel-grid').setPointerCapture(event.pointerId);
+    pixelFocus = point.y * editor.font.glyph(selected).width + point.x;
+    for (let i = 0; i < $('pixel-grid').children.length; i++) $('pixel-grid').children[i].tabIndex = i === pixelFocus ? 0 : -1;
+    $('pixel-grid').children[pixelFocus].focus({preventScroll: true}); paintTo(point);
+  });
+  $('pixel-grid').addEventListener('pointermove', event => { if (pointer?.id === event.pointerId) { event.preventDefault(); paintTo(gridPoint(event)); } });
+  $('pixel-grid').addEventListener('pointerup', event => { if (pointer?.id === event.pointerId) finishStroke(); });
+  $('pixel-grid').addEventListener('pointercancel', event => { if (pointer?.id === event.pointerId) finishStroke(true); });
+  $('pixel-grid').addEventListener('lostpointercapture', () => finishStroke());
+  for (const [id, method] of [['undo', 'undo'], ['redo', 'redo'], ['reset-glyph', 'resetGlyph'], ['reset-font', 'resetAll']]) {
+    $(id).addEventListener('click', () => {
+      if (!current) return; finishStroke(); editors.get(current)[method](selected); refreshEdits();
+      $('export-status').textContent = '';
+    });
+  }
+  $('export-font').addEventListener('click', () => {
+    if (!current) return; finishStroke();
+    let url;
+    try {
+      const editor = editors.get(current), bytes = editor.export(); XTFont.parse(bytes);
+      url = URL.createObjectURL(new Blob([bytes], {type: 'application/octet-stream'}));
+      const link = document.createElement('a'); link.href = url; link.download = `${current}E.FON`;
+      document.body.append(link); link.click(); link.remove(); editor.markSaved();
+      $('export-status').textContent = `Download requested: ${current}E.FON. Keep it as a copy; test it before replacing a Windows font.`;
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (error) {
+      if (url) URL.revokeObjectURL(url);
+      $('export-status').textContent = 'Download failed. Your edits are still in this tab; try again.';
+    }
+  });
+  window.addEventListener('beforeunload', event => {
+    if ([...editors.values()].some(editor => !editor.isSaved)) { event.preventDefault(); event.returnValue = ''; }
   });
   async function load() {
     $('load-status').textContent = 'Loading the font files…';
@@ -176,7 +308,7 @@
       try {
         const response = await fetch(`fonts/${name}.FON`);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        fonts.set(name, XTFont.parse(await response.arrayBuffer()));
+        const editor = XTFont.edit(await response.arrayBuffer()); editors.set(name, editor); fonts.set(name, editor.font);
       } catch (error) { failures.push(name); }
     }));
     for (const option of $('font').options) option.disabled = !fonts.has(option.value);
