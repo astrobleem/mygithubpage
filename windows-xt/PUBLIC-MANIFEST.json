@@ -140,7 +140,7 @@
     {
       "path": "fonts/fonts/XTCSYS.FON",
       "bytes": 4592,
-      "sha256": "c45b5d313109fe0b5fa6e665344accd5fa9de4a5ef35c0f416fe8ca1d83c1326"
+      "sha256": "4a66e2f7fd26f9575fb26766e630c0805bfee60f51d27adaf08975678bcbca76"
     },
     {
       "path": "fonts/fonts/XTEFIX.FON",
@@ -164,8 +164,8 @@
     },
     {
       "path": "fonts/index.html",
-      "bytes": 10306,
-      "sha256": "2ab651173ae8434062c0299c1c93e8001e6e9812ca37cf4b46fe0b875e148640"
+      "bytes": 10552,
+      "sha256": "9b9e689c61f0d9ab498a7742d301d1dc9f3853765a39adb83d33fbcc2cafd4da"
     },
     {
       "path": "fonts/style.css",
@@ -174,8 +174,8 @@
     },
     {
       "path": "fonts/viewer.js",
-      "bytes": 23741,
-      "sha256": "f59c4ab82b12a9a75428810f05a2d6cebc56fcbd1d0f73058049ad8add250475"
+      "bytes": 23874,
+      "sha256": "f870b2ebac9d361c581e38221d0f09bc677342badf27a4cea3e4b3a23d02cafe"
     },
     {
       "path": "index.html",

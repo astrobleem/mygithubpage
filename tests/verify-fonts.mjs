@@ -32,11 +32,15 @@ for (const name of names) {
   for(const cut of [0,1,2,60,63,64,100,128,256,512,1024,data.length-128]) assert.throws(()=>fontAPI.parse(data.subarray(0,cut)));
   const corrupt=Buffer.from(data); corrupt.writeUInt32LE(0xffffffff,60);assert.throws(()=>fontAPI.parse(corrupt));
 }
+const system=fontAPI.parse(read('fonts/XTCSYS.FON'));
+assert.equal(system.glyph(77).width,9);assert.equal(system.glyph(87).width,9);
+assert.equal(system.glyph(77).rows.map(r=>r.join('')).join('/'),'010000010/011000110/010101010/010010010/010000010/010000010/010000010/000000000');
+assert.equal(system.glyph(87).rows.map(r=>r.join('')).join('/'),'010000010/010000010/010000010/010010010/010101010/011000110/010000010/000000000');
 assert.ok(read('fonts/XTCOEM.FON').equals(read('fonts/XTEOEM.FON')));
 assert.equal(fontAPI.encode('╔═╗☺',fontAPI.parse(read('fonts/XTCOEM.FON'))).lines[0].join(','),'201,205,187,1');
 const html=read('index.html').toString();
 assert.match(html,/script-src 'self';/);assert.ok(!html.includes('unsafe-eval'));
-assert.match(html,/src="font\.js\?v=3"/);assert.match(html,/src="viewer\.js\?v=3"/);assert.match(html,/href="style\.css\?v=3"/);
+assert.match(html,/src="font\.js\?v=4"/);assert.match(html,/src="viewer\.js\?v=4"/);assert.match(html,/href="style\.css\?v=4"/);
 assert.match(html,/href="\.\.\/"/);assert.match(html,/maxlength="1000"/);
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
 class Element {
@@ -58,17 +62,18 @@ async function ui(failed=[]) {
   const get=id=>elements.get(id), buttons=['desktop','alphabet','oem'].map(sample=>{const b=new Element('button');b.dataset.sample=sample;return b;});
   get('font').options=names.map(value=>({value}));get('font').value=names[0];get('font').disabled=true;
   get('scale').value='3';get('theme').value='paper';get('sample').value='Windows XT';get('preview').parentElement=new Element();
-  const downloads=[],windowEvents={};
+  const downloads=[],windowEvents={},requests=[];
   const document={body:new Element('body'),getElementById:get,createElement:tag=>new Element(tag),querySelectorAll:()=>buttons};
   const ctx=vm.createContext({document,XTFont:fontAPI,TextDecoder,Uint8Array,DataView,console,Blob,
     window:{addEventListener(k,fn){windowEvents[k]=fn;}},URL:{createObjectURL(blob){downloads.push(blob);return 'blob:test';},revokeObjectURL(){}},setTimeout(){},
-    fetch:async url=>({ok:!failed.some(n=>url.includes(n)),status:404,arrayBuffer:async()=>read(url)})});
+    fetch:async url=>(requests.push(url),{ok:!failed.some(n=>url.includes(n)),status:404,arrayBuffer:async()=>read(url.split('?')[0])})});
   vm.runInContext(read('viewer.js').toString(),ctx);await new Promise(resolve=>setImmediate(resolve));
-  return {get,buttons,failed,downloads,windowEvents};
+  return {get,buttons,failed,downloads,windowEvents,requests};
 }
-const {get,buttons,downloads,windowEvents}=await ui();
+const {get,buttons,downloads,windowEvents,requests}=await ui();
+assert.ok(requests.includes('fonts/XTCSYS.FON?rev=wm9'));
 assert.equal(get('font').disabled,false);assert.equal(get('atlas').children.length,256);assert.equal(get('comparisons').children.length,21);
-for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));}
+for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));if(name==='XTCSYS')assert.equal(get('download').href,'fonts/XTCSYS.FON?rev=wm9');}
 get('sample').value='€😀';get('sample').events.input();assert.match(get('missing').textContent,/Outside this encoding/);
 get('font').value='XTCSYS';get('font').events.change();buttons[2].events.click();assert.equal(get('font').value,'XTCOEM');assert.match(get('missing').textContent,/All characters/);
 get('byte').value='FF';get('byte').events.input();assert.match(get('glyph-name').textContent,/Fallback/);

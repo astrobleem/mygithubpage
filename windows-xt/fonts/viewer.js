@@ -5,7 +5,7 @@
   const fonts = new Map(), editors = new Map();
   const names = Array.from($('font').options, option => option.value);
   const descriptions = {
-    XTCSYS: ['System / 8 px', 'Proportional graphics System font. The XTC family keeps the short cells used by the 200-line profiles.'],
+    XTCSYS: ['System / 8 px', 'Corrected capital M and W use 7-pixel ink and 9-pixel advances. Other glyphs and header metrics are unchanged. The short System strike for XTC graphics profiles.'],
     XTCFIX: ['Fixed / 8 × 8', 'Fixed-width ANSI characters, with one extra pixel of external line spacing.'],
     XTCOEM: ['OEM / 8 × 8', 'CP437 characters with full-cell box drawing, shades, blocks and control pictures.'],
     XTESYS: ['System / 12 px', 'The taller proportional System strike in the XTE family.'],
@@ -27,6 +27,7 @@
     TKP8: ['Tandy 2K / 8 px', 'XT Tandy 2K: lighter Tandy 2000 graphics artwork, trimmed to proportional advances with one pixel of spacing.'],
     TKP12: ['Tandy 2K / 12 px', 'XT Tandy 2K at 12 rows: lighter artwork, a deliberate vertical row map and the same proportional advances as its 8-row companion.']
   };
+  const fontURL = name => `fonts/${name}.FON${name === 'XTCSYS' ? '?rev=wm9' : ''}`;
   const themes = {paper: ['#253325', '#fffef7'], terminal: ['#b9f68a', '#17251b'], windows: ['#ffffff', '#000080']};
   const samples = {
     desktop: 'Windows XT\nFile  Edit  View  Help\nOpen a document\nSave changes?\n[ OK ]  [ Cancel ]',
@@ -205,7 +206,7 @@
     if (tandy) {
       license.append(' · '); const mit = document.createElement('a'); mit.href = 'fonts/LICENSE.TXT'; mit.textContent = 'MIT notice'; mit.download = ''; license.append(mit);
     }
-    $('download').href = `fonts/${name}.FON`; $('download').textContent = `Original ${name}.FON ↗`;
+    $('download').href = fontURL(name); $('download').textContent = `Original ${name}.FON ↗`;
     $('metrics').replaceChildren();
     const metrics = [['Cell height', `${font.height} px`], ['Width', font.fixedWidth ? `${font.fixedWidth} px fixed` : 'Proportional'],
       ['Encoding', font.charset === 255 ? 'CP437 / OEM' : 'Win 3.0 ANSI'], ['Ascent', `${font.ascent} px`],
@@ -321,7 +322,7 @@
     await Promise.all(names.map(async name => {
       if (fonts.has(name)) return;
       try {
-        const response = await fetch(`fonts/${name}.FON`);
+        const response = await fetch(fontURL(name));
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const editor = XTFont.edit(await response.arrayBuffer()); editors.set(name, editor); fonts.set(name, editor.font);
       } catch (error) { failures.push(name); }
