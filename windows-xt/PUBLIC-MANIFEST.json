@@ -59,8 +59,8 @@
     },
     {
       "path": "fonts/fonts/CG1HELV.FON",
-      "bytes": 3536,
-      "sha256": "80e221bd6626d5ec723ce7b723a33ea3a041f7dc8dd17e2498af5afe53917c9d"
+      "bytes": 3520,
+      "sha256": "7d4bb91914efac9332330f6b99bcbabc2bd9c0795cb07ec5727f800ae4c7b134"
     },
     {
       "path": "fonts/fonts/CG1OEM.FON",
@@ -74,8 +74,8 @@
     },
     {
       "path": "fonts/fonts/CG2HELV.FON",
-      "bytes": 3760,
-      "sha256": "d1f6878faaf8abd06f425d7672277d6eb6d1097f9994c738ba753655d125afc3"
+      "bytes": 3744,
+      "sha256": "5587cf10a97fea438ed3ffe86efa85147200f47c46234d3c1b2b1a1f3449d753"
     },
     {
       "path": "fonts/fonts/CG2SYS.FON",
@@ -84,8 +84,8 @@
     },
     {
       "path": "fonts/fonts/CG6HELV.FON",
-      "bytes": 4256,
-      "sha256": "d3bccab5f5daea935ca568923d5274315301f93caffd50e2cdcdd4d59735842d"
+      "bytes": 4224,
+      "sha256": "fad273d896b583253ac2d29e2232b1be076f66ba7a8fb2562fc6670c942085a6"
     },
     {
       "path": "fonts/fonts/LICENSE.TXT",
@@ -94,23 +94,23 @@
     },
     {
       "path": "fonts/fonts/T1P12.FON",
-      "bytes": 5360,
-      "sha256": "ff759edfd53a8ee2a4e6da09d64084876bddaab2123b43b4ac68283ee31c4ede"
+      "bytes": 5376,
+      "sha256": "d97785ec9a556e43aea2c637404a1dc7f44335817f67cb7958bd1090b607e136"
     },
     {
       "path": "fonts/fonts/T1P8.FON",
-      "bytes": 4384,
-      "sha256": "fc4d1e08f34ce1534dac575762376b6453a221951c7993c1d8c159df5f64b71f"
+      "bytes": 4400,
+      "sha256": "025d0fb56fbca6387dbd3fc0ff9101a3de405dd9593d8d4e91d54c84c6d7b266"
     },
     {
       "path": "fonts/fonts/T2P12.FON",
       "bytes": 5264,
-      "sha256": "d7d854c9a9ca510965cda0eef8a5a10cf6d11752b3de070fe07aa868d720543d"
+      "sha256": "cd65dccc9975a9507564d38dbceeca3d67dd19fa7b5c7d172729e26f15f918e6"
     },
     {
       "path": "fonts/fonts/T2P8.FON",
-      "bytes": 4304,
-      "sha256": "dc247ceabacde6d7fed5004d8e783e4283675a07e09328bd483256f4a476e54f"
+      "bytes": 4320,
+      "sha256": "5169bc5409b6824f0b17a558ff487c2fa231ff89e05b884e91aeb834cc5c228e"
     },
     {
       "path": "fonts/fonts/TANDYLIC.TXT",
@@ -120,12 +120,12 @@
     {
       "path": "fonts/fonts/TKP12.FON",
       "bytes": 5184,
-      "sha256": "2caf312a5d7397b4862a45e951ba8eaa559a2fcb627f51dcf75abbb044d446ef"
+      "sha256": "cae5d328778934ae9134bb0e13ddca14fe9e23ec1e502d1187c522f226af7bfc"
     },
     {
       "path": "fonts/fonts/TKP8.FON",
-      "bytes": 4256,
-      "sha256": "43399f3e363ad0608960effc2fe2ae836166756f21a7fff459af33419e1e0c64"
+      "bytes": 4272,
+      "sha256": "18edb7c002a4e4b3e10b0377299835d7507f964136ffde6163e7ec7f718877b7"
     },
     {
       "path": "fonts/fonts/XTCFIX.FON",
@@ -140,7 +140,7 @@
     {
       "path": "fonts/fonts/XTCSYS.FON",
       "bytes": 4592,
-      "sha256": "4a66e2f7fd26f9575fb26766e630c0805bfee60f51d27adaf08975678bcbca76"
+      "sha256": "56aab79d1fc587ed0d2fecb6f5dc6416aa8dbb9a1eed994775a4d633c316af90"
     },
     {
       "path": "fonts/fonts/XTEFIX.FON",
@@ -164,8 +164,8 @@
     },
     {
       "path": "fonts/index.html",
-      "bytes": 10552,
-      "sha256": "9b9e689c61f0d9ab498a7742d301d1dc9f3853765a39adb83d33fbcc2cafd4da"
+      "bytes": 10737,
+      "sha256": "5b093dbb12498677c699cf7a51603b36f20a35c71fefd67a75026da7a0cc47bc"
     },
     {
       "path": "fonts/style.css",
@@ -174,8 +174,8 @@
     },
     {
       "path": "fonts/viewer.js",
-      "bytes": 23874,
-      "sha256": "f870b2ebac9d361c581e38221d0f09bc677342badf27a4cea3e4b3a23d02cafe"
+      "bytes": 24099,
+      "sha256": "8c9af67381d53efc17ac0e9de9a5818e39a78f7d884233d21c0f34955422ca73"
     },
     {
       "path": "index.html",

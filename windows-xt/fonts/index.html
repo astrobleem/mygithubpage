@@ -7,12 +7,12 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="description" content="Edit Windows XT bitmap fonts, including proportional Tandy and compact CGA. Preview every byte and download edited Windows FON copies.">
   <title>XT Pixels · Windows XT font editor</title>
-  <link rel="stylesheet" href="style.css?v=4">
-  <script defer src="font.js?v=4"></script>
-  <script defer src="viewer.js?v=4"></script>
+  <link rel="stylesheet" href="style.css?v=5">
+  <script defer src="font.js?v=5"></script>
+  <script defer src="viewer.js?v=5"></script>
 </head>
 <body>
-  <header class="site-header"><a href="../">WINDOWS XT</a><span>FONT LAB / 04</span></header>
+  <header class="site-header"><a href="../">WINDOWS XT</a><span>FONT LAB / 05</span></header>
   <main>
     <div class="intro"><p class="eyebrow">SMALL FONTS. EVERY PIXEL COUNTS.</p><h1>XT Pixels<span class="cursor" aria-hidden="true">_</span></h1>
       <p class="lede">The bitmap fonts for Windows XT.<br>Draw a character. Preview your words. Make it yours.</p>
@@ -65,7 +65,7 @@ Aa Bb Cc 0123456789  !?&amp;@#%</textarea>
       <div class="preview-panel"><div class="panel-bar"><span>LIVE PREVIEW</span><span id="preview-size"></span></div>
         <div class="preview-scroll" tabindex="0" aria-label="Text preview; scroll for long lines"><canvas id="preview" role="img" aria-label="Bitmap font preview"></canvas></div>
         <div class="font-description"><h2 id="font-title">System</h2><p id="font-description"></p><dl id="metrics"></dl><p id="font-license" class="small"></p>
-          <a id="download" class="download" href="fonts/XTCSYS.FON?rev=wm9" download>Original XTCSYS.FON <span aria-hidden="true">↗</span></a>
+          <a id="download" class="download" href="fonts/XTCSYS.FON?rev=cap5" download>Original XTCSYS.FON <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
@@ -86,7 +86,7 @@ Aa Bb Cc 0123456789  !?&amp;@#%</textarea>
     </section>
     <section class="compare-section" aria-labelledby="compare-heading"><div class="section-title"><div><p class="eyebrow">SIDE BY SIDE</p><h2 id="compare-heading">Same words. Twenty-one files.</h2></div><p>Your first line in every font, including your edits, at 2×.</p></div><div id="comparisons" class="comparisons"></div></section>
     <section class="notes"><h2>Your pixels, the original font structure</h2>
-      <p>The XT Pixels R10 set comes from Windows XT. XTCSYS includes corrected capital M/W, with 7-pixel ink and 9-pixel advances; its other glyphs and file headers are unchanged. This changes Windows’ measured dialog base units from 8 × 8 to 7 × 8 pixels. Other XT Pixels files retain their distributed bytes. The CGA packet adds seven compact 5/6-row fonts and the full-coverage 8-row CG6HELV. Six proportional application fonts add XT Tandy I, XT Tandy II and XT Tandy 2K at 8 and 12 rows. They do not replace System, Fixed or Terminal. Previews decode the exact .FON assets at integer zoom with square pixels; they are not CRT simulations or Windows screenshots.</p>
+      <p>The XT Pixels R10 set comes from Windows XT. XTCSYS includes corrected capital M/W, with 7-pixel ink and 9-pixel advances. I, J, C, E and S each have one extra blank advance pixel to preserve Windows’ measured 8 × 8 dialog base units. All other glyphs and file headers are unchanged. Other XT Pixels files retain their distributed bytes. The CGA packet adds seven compact 5/6-row fonts and the full-coverage 8-row CG6HELV. Six proportional application fonts add XT Tandy I, XT Tandy II and XT Tandy 2K at 8 and 12 rows. They do not replace System, Fixed or Terminal. The six Tandy and three Helv files include the FONTRES container description required by Windows 3 Control Panel; their font resources are unchanged. Previews decode the exact .FON assets at integer zoom with square pixels; they are not CRT simulations or Windows screenshots.</p>
       <p>Edits stay in this tab while you switch fonts. Download every edited font you want to keep before closing or refreshing. Nothing is uploaded or installed. Downloads use a new 8.3 filename ending in E; original downloads remain untouched. Undo, redo and both reset buttons operate on the selected font.</p>
       <p>Exports change only glyph bitmap bits. Character widths, height, leading, encoding, resource IDs, face names and the Windows FNT/FONTDIR/NE structure are preserved. An unchanged export is byte-identical to its source. These copies retain the original internal font identities: keep backups and test in a separate Windows installation before replacing a system font. Edited copies have not been runtime-qualified in Windows.</p>
       <p>ANSI and OEM/CP437 bytes are different. The compact CG1/CG2 fonts draw ASCII; compact OEM also draws box and block characters. Other in-range bytes contain placeholder boxes you can edit. Out-of-range characters use each font’s default byte, shown in the preview warning. CG6HELV retains the full XT Pixels ANSI artwork. The new Tandy faces map CP437 artwork into Windows ANSI, with XT Pixels artwork for ANSI characters missing from CP437. Euro and emoji are not part of these encodings. The atlas displays all 256 byte inputs, including substitutions.</p>

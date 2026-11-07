@@ -5,7 +5,7 @@
   const fonts = new Map(), editors = new Map();
   const names = Array.from($('font').options, option => option.value);
   const descriptions = {
-    XTCSYS: ['System / 8 px', 'Corrected capital M and W use 7-pixel ink and 9-pixel advances. Other glyphs and header metrics are unchanged. The short System strike for XTC graphics profiles.'],
+    XTCSYS: ['System / 8 px', 'Corrected capital M and W use 7-pixel ink and 9-pixel advances. I, J, C, E and S have one extra blank advance pixel to preserve Windows’ 8 × 8 dialog base units. The short System strike for XTC graphics profiles.'],
     XTCFIX: ['Fixed / 8 × 8', 'Fixed-width ANSI characters, with one extra pixel of external line spacing.'],
     XTCOEM: ['OEM / 8 × 8', 'CP437 characters with full-cell box drawing, shades, blocks and control pictures.'],
     XTESYS: ['System / 12 px', 'The taller proportional System strike in the XTE family.'],
@@ -27,7 +27,8 @@
     TKP8: ['Tandy 2K / 8 px', 'XT Tandy 2K: lighter Tandy 2000 graphics artwork, trimmed to proportional advances with one pixel of spacing.'],
     TKP12: ['Tandy 2K / 12 px', 'XT Tandy 2K at 12 rows: lighter artwork, a deliberate vertical row map and the same proportional advances as its 8-row companion.']
   };
-  const fontURL = name => `fonts/${name}.FON${name === 'XTCSYS' ? '?rev=wm9' : ''}`;
+  const installableFonts = new Set(['CG1HELV', 'CG2HELV', 'CG6HELV', 'T1P8', 'T1P12', 'T2P8', 'T2P12', 'TKP8', 'TKP12']);
+  const fontURL = name => `fonts/${name}.FON${name === 'XTCSYS' ? '?rev=cap5' : installableFonts.has(name) ? '?rev=fontres1' : ''}`;
   const themes = {paper: ['#253325', '#fffef7'], terminal: ['#b9f68a', '#17251b'], windows: ['#ffffff', '#000080']};
   const samples = {
     desktop: 'Windows XT\nFile  Edit  View  Help\nOpen a document\nSave changes?\n[ OK ]  [ Cancel ]',

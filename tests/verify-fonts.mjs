@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 const root = new URL('../windows-xt/fonts/', import.meta.url);
 const names = ['XTCSYS','XTCFIX','XTCOEM','XTESYS','XTEFIX','XTEOEM','XTTSYS','CG1SYS','CG1HELV','CG1COUR','CG1FIX','CG1OEM','CG2SYS','CG2HELV','CG6HELV','T1P8','T1P12','T2P8','T2P12','TKP8','TKP12'];
 const read = name => fs.readFileSync(new URL(name,root));
+const optionalFonts = ['CG1HELV','CG2HELV','CG6HELV','T1P8','T1P12','T2P8','T2P12','TKP8','TKP12'];
 const context = vm.createContext({TextDecoder,Uint8Array,DataView});
 vm.runInContext(read('font.js').toString(),context);
 const fontAPI = context.XTFont;
@@ -12,6 +13,14 @@ let pixels = 0;
 for (const name of names) {
   const data = read(`fonts/${name}.FON`), f = fontAPI.parse(data);
   const ne = data.readUInt32LE(60), res = ne + data.readUInt16LE(ne + 36), align = 2 ** data.readUInt16LE(res);
+  if (optionalFonts.includes(name)) {
+    const at=data.readUInt32LE(ne+44), size=data.readUInt16LE(ne+32), count=data[at];
+    const dpi=name==='CG1HELV'||name==='CG2HELV'?'120,48,40':name.endsWith('12')?'133,96,72':'200,96,48';
+    const face=name.startsWith('T1')?'XT Tandy I':name.startsWith('T2')?'XT Tandy II':name.startsWith('TK')?'XT Tandy 2K':'Helv';
+    const rows=name==='CG1HELV'?5:name==='CG2HELV'?6:name.endsWith('12')?12:8;
+    assert.equal(size,count+4);assert.equal(data.subarray(at+1,at+1+count).toString('ascii'),`FONTRES ${dpi} : ${face} ${rows}-row`);
+    assert.equal(data.readUInt16LE(at+1+count),0);assert.equal(data[at+3+count],0);
+  }
   let table = res + 2, start;
   while (data.readUInt16LE(table)) {
     const kind = data.readUInt16LE(table), count = data.readUInt16LE(table + 2); table += 8;
@@ -36,11 +45,15 @@ const system=fontAPI.parse(read('fonts/XTCSYS.FON'));
 assert.equal(system.glyph(77).width,9);assert.equal(system.glyph(87).width,9);
 assert.equal(system.glyph(77).rows.map(r=>r.join('')).join('/'),'010000010/011000110/010101010/010010010/010000010/010000010/010000010/000000000');
 assert.equal(system.glyph(87).rows.map(r=>r.join('')).join('/'),'010000010/010000010/010000010/010010010/010101010/011000110/010000010/000000000');
+for(const [letter,width] of Object.entries({I:5,J:8,C:10,E:10,S:10})) {
+  const glyph=system.glyph(letter.charCodeAt(0));assert.equal(glyph.width,width);
+  for(const row of glyph.rows) assert.equal(row.at(-1),0);
+}
 assert.ok(read('fonts/XTCOEM.FON').equals(read('fonts/XTEOEM.FON')));
 assert.equal(fontAPI.encode('╔═╗☺',fontAPI.parse(read('fonts/XTCOEM.FON'))).lines[0].join(','),'201,205,187,1');
 const html=read('index.html').toString();
 assert.match(html,/script-src 'self';/);assert.ok(!html.includes('unsafe-eval'));
-assert.match(html,/src="font\.js\?v=4"/);assert.match(html,/src="viewer\.js\?v=4"/);assert.match(html,/href="style\.css\?v=4"/);
+assert.match(html,/src="font\.js\?v=5"/);assert.match(html,/src="viewer\.js\?v=5"/);assert.match(html,/href="style\.css\?v=5"/);
 assert.match(html,/href="\.\.\/"/);assert.match(html,/maxlength="1000"/);
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
 class Element {
@@ -71,9 +84,10 @@ async function ui(failed=[]) {
   return {get,buttons,failed,downloads,windowEvents,requests};
 }
 const {get,buttons,downloads,windowEvents,requests}=await ui();
-assert.ok(requests.includes('fonts/XTCSYS.FON?rev=wm9'));
+assert.ok(requests.includes('fonts/XTCSYS.FON?rev=cap5'));
+for(const name of optionalFonts) assert.ok(requests.includes(`fonts/${name}.FON?rev=fontres1`));
 assert.equal(get('font').disabled,false);assert.equal(get('atlas').children.length,256);assert.equal(get('comparisons').children.length,21);
-for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));if(name==='XTCSYS')assert.equal(get('download').href,'fonts/XTCSYS.FON?rev=wm9');}
+for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));if(name==='XTCSYS')assert.equal(get('download').href,'fonts/XTCSYS.FON?rev=cap5');if(optionalFonts.includes(name))assert.equal(get('download').href,`fonts/${name}.FON?rev=fontres1`);}
 get('sample').value='€😀';get('sample').events.input();assert.match(get('missing').textContent,/Outside this encoding/);
 get('font').value='XTCSYS';get('font').events.change();buttons[2].events.click();assert.equal(get('font').value,'XTCOEM');assert.match(get('missing').textContent,/All characters/);
 get('byte').value='FF';get('byte').events.input();assert.match(get('glyph-name').textContent,/Fallback/);
