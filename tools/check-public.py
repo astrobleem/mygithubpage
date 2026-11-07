@@ -8,12 +8,13 @@ ALLOWED={'.nojekyll','index.html','style.css','core.mjs','profiles.mjs','app.mjs
  'vendor/emulators.js','vendor/wdosbox.js','vendor/wdosbox.wasm','vendor/wdosbox-x.js','vendor/wdosbox-x.wasm','vendor/wlibzip.js','vendor/wlibzip.wasm','vendor/LICENSE','vendor/package.json',
  'source/emulators-8.5.2-source.tar.gz','source/MANIFEST.json','PUBLIC-MANIFEST.json'}
 
-# Only the published original MIT fonts are allowed as resource-only MZ files.
+# Only the explicitly listed font assets are allowed as resource-only MZ files.
 FONT_NAMES = ('XTCSYS', 'XTCFIX', 'XTCOEM', 'XTESYS', 'XTEFIX', 'XTEOEM', 'XTTSYS',
-              'CG1SYS', 'CG1HELV', 'CG1COUR', 'CG1FIX', 'CG1OEM', 'CG2SYS', 'CG2HELV')
+              'CG1SYS', 'CG1HELV', 'CG1COUR', 'CG1FIX', 'CG1OEM', 'CG2SYS', 'CG2HELV', 'CG6HELV',
+              'T1P8', 'T1P12', 'T2P8', 'T2P12', 'TKP8', 'TKP12')
 FONT_FILES = {'fonts/fonts/' + name + '.FON' for name in FONT_NAMES}
 ALLOWED |= FONT_FILES | {'fonts/index.html', 'fonts/style.css', 'fonts/font.js',
-                       'fonts/viewer.js', 'fonts/fonts/LICENSE.TXT'}
+                       'fonts/viewer.js', 'fonts/fonts/LICENSE.TXT', 'fonts/fonts/TANDYLIC.TXT'}
 
 def check(write=False):
     found={p.relative_to(SITE).as_posix() for p in SITE.rglob('*') if p.is_file()}

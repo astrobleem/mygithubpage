@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
 const root = new URL('../windows-xt/fonts/', import.meta.url);
-const names = ['XTCSYS','XTCFIX','XTCOEM','XTESYS','XTEFIX','XTEOEM','XTTSYS','CG1SYS','CG1HELV','CG1COUR','CG1FIX','CG1OEM','CG2SYS','CG2HELV'];
+const names = ['XTCSYS','XTCFIX','XTCOEM','XTESYS','XTEFIX','XTEOEM','XTTSYS','CG1SYS','CG1HELV','CG1COUR','CG1FIX','CG1OEM','CG2SYS','CG2HELV','CG6HELV','T1P8','T1P12','T2P8','T2P12','TKP8','TKP12'];
 const read = name => fs.readFileSync(new URL(name,root));
 const context = vm.createContext({TextDecoder,Uint8Array,DataView});
 vm.runInContext(read('font.js').toString(),context);
@@ -25,7 +25,7 @@ for (const name of names) {
       assert.equal(glyph.rows[y][x],Number(Boolean(data[start+offset+Math.floor(x/8)*f.height+y] & (128 >> (x%8))))); pixels++;
     }
   }
-  assert.equal(f.height, name==='XTESYS'?12:name==='XTEFIX'?10:name.startsWith('CG')?(name.startsWith('CG2')||['CG1FIX','CG1OEM'].includes(name)?6:5):8);
+  assert.equal(f.height, name==='XTESYS'||name.endsWith('12')?12:name==='XTEFIX'?10:name==='CG6HELV'?8:name.startsWith('CG')?(name.startsWith('CG2')||['CG1FIX','CG1OEM'].includes(name)?6:5):8);
   assert.equal(f.charset,name.endsWith('OEM')?255:0);
   assert.equal(fontAPI.encode('€😀',f).missing.length,2);
   assert.equal(fontAPI.encode('A\r\nB\tC',f).lines[1].join(','),'66,32,32,32,32,67');
@@ -36,7 +36,7 @@ assert.ok(read('fonts/XTCOEM.FON').equals(read('fonts/XTEOEM.FON')));
 assert.equal(fontAPI.encode('╔═╗☺',fontAPI.parse(read('fonts/XTCOEM.FON'))).lines[0].join(','),'201,205,187,1');
 const html=read('index.html').toString();
 assert.match(html,/script-src 'self';/);assert.ok(!html.includes('unsafe-eval'));
-assert.match(html,/src="font\.js\?v=2"/);assert.match(html,/src="viewer\.js\?v=2"/);assert.match(html,/href="style\.css\?v=2"/);
+assert.match(html,/src="font\.js\?v=3"/);assert.match(html,/src="viewer\.js\?v=3"/);assert.match(html,/href="style\.css\?v=3"/);
 assert.match(html,/href="\.\.\/"/);assert.match(html,/maxlength="1000"/);
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
 class Element {
@@ -67,7 +67,7 @@ async function ui(failed=[]) {
   return {get,buttons,failed,downloads,windowEvents};
 }
 const {get,buttons,downloads,windowEvents}=await ui();
-assert.equal(get('font').disabled,false);assert.equal(get('atlas').children.length,256);assert.equal(get('comparisons').children.length,14);
+assert.equal(get('font').disabled,false);assert.equal(get('atlas').children.length,256);assert.equal(get('comparisons').children.length,21);
 for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));}
 get('sample').value='€😀';get('sample').events.input();assert.match(get('missing').textContent,/Outside this encoding/);
 get('font').value='XTCSYS';get('font').events.change();buttons[2].events.click();assert.equal(get('font').value,'XTCOEM');assert.match(get('missing').textContent,/All characters/);
@@ -116,4 +116,24 @@ get('pixel-grid').children[0].events.keydown({key:'ArrowRight',preventDefault(){
 get('pixel-grid').events.pointerdown(pointer(1,1));get('font').value='CG1OEM';get('font').events.change();assert.match(get('edit-status').textContent,/0 changed glyphs/);assert.match(get('edit-status').textContent,/1 other font/);
 get('sample').value='╔═╗☺';get('sample').events.input();assert.match(get('missing').textContent,/Original placeholder boxes: ☺/);assert.doesNotMatch(get('missing').textContent,/Outside this encoding/);
 buttons[2].events.click();assert.equal(get('font').value,'CG1OEM');
-console.log(`PASS font viewer/editor UI: ${pixels} decoded pixels, 3584 glyph advances, 14 fonts, encoding/coverage, download roundtrip, edits/undo/redo/reset, per-font state, drag/cancel/switch interruption, keyboard, bounds and failed-load retry. Synthetic UI only.`);
+// Full ANSI coverage remains distinct from the tiny CG1/CG2 placeholder sets.
+get('font').value='CG6HELV';get('font').events.change();get('sample').value='é À ß £';get('sample').events.input();
+assert.doesNotMatch(get('missing').textContent,/placeholder|Outside/);assert.match(get('font-license').textContent,/MIT/);
+assert.equal(get('font-license').children[0].href,'fonts/LICENSE.TXT');
+buttons[2].events.click();assert.equal(get('font').value,'XTCOEM');get('sample').value='é À ß £';
+for(const name of ['T1P8','T1P12','T2P8','T2P12','TKP8','TKP12']) {
+  const f=fontAPI.parse(read(`fonts/${name}.FON`));assert.equal(f.fixedWidth,0);assert.equal(f.fallback,128);
+  assert.equal(f.face,name.startsWith('T1')?'XT Tandy I':name.startsWith('T2')?'XT Tandy II':'XT Tandy 2K');
+  assert.equal(f.ascent,name.endsWith('12')?10:7);assert.equal(f.internal,name.endsWith('12')?2:1);assert.equal(f.external,1);
+  assert.ok(f.glyph(105).width<f.glyph(87).width);assert.ok(f.glyph(46).width<f.glyph(77).width);
+  get('font').value=name;get('font').events.change();get('sample').events.input();
+  assert.doesNotMatch(get('missing').textContent,/placeholder|Outside/);assert.match(get('font-license').textContent,/VileR.*CC BY-SA 4.0/);
+  assert.equal(get('font-license').children[0].href,'fonts/TANDYLIC.TXT');assert.equal(get('font-license').children[1].href,'fonts/LICENSE.TXT');
+  get('byte').value='41';get('byte').events.input();clickPixel();get('export-font').events.click();
+  const output=Buffer.from(await downloads.at(-1).arrayBuffer());assert.equal(output.length,read(`fonts/${name}.FON`).length);
+  assert.ok(!output.equals(read(`fonts/${name}.FON`)));get('undo').events.click();get('export-font').events.click();
+  assert.ok(Buffer.from(await downloads.at(-1).arrayBuffer()).equals(read(`fonts/${name}.FON`)));
+}
+assert.match(read('fonts/TANDYLIC.TXT').toString(),/Attribution-ShareAlike 4.0 International/);
+assert.match(html,/Oldschool PC Font Pack v2.2/);assert.match(html,/Twenty-one files/);assert.doesNotMatch(html,/MIT licensed/);
+console.log(`PASS font viewer/editor UI: ${pixels} decoded pixels, 5376 glyph advances, 21 fonts, encoding/coverage, download roundtrip, edits/undo/redo/reset, per-font state, drag/cancel/switch interruption, keyboard, bounds and failed-load retry. Synthetic UI only.`);

@@ -5,18 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <meta name="description" content="Edit the original Windows XT bitmap fonts, including compact CGA. Preview every byte and download edited Windows FON copies.">
+  <meta name="description" content="Edit Windows XT bitmap fonts, including proportional Tandy and compact CGA. Preview every byte and download edited Windows FON copies.">
   <title>XT Pixels · Windows XT font editor</title>
-  <link rel="stylesheet" href="style.css?v=2">
-  <script defer src="font.js?v=2"></script>
-  <script defer src="viewer.js?v=2"></script>
+  <link rel="stylesheet" href="style.css?v=3">
+  <script defer src="font.js?v=3"></script>
+  <script defer src="viewer.js?v=3"></script>
 </head>
 <body>
-  <header class="site-header"><a href="../">WINDOWS XT</a><span>FONT LAB / 02</span></header>
+  <header class="site-header"><a href="../">WINDOWS XT</a><span>FONT LAB / 03</span></header>
   <main>
     <div class="intro"><p class="eyebrow">SMALL FONTS. EVERY PIXEL COUNTS.</p><h1>XT Pixels<span class="cursor" aria-hidden="true">_</span></h1>
-      <p class="lede">The original bitmap fonts inside Windows XT.<br>Draw a character. Preview your words. Make it yours.</p>
-      <p class="badge">14 original font files <span>·</span> Original bitmap pixels <span>·</span> MIT licensed</p>
+      <p class="lede">The bitmap fonts for Windows XT.<br>Draw a character. Preview your words. Make it yours.</p>
+      <p class="badge">21 font files <span>·</span> Pixel-accurate previews <span>·</span> Fonts credited below</p>
     </div>
     <noscript><p class="notice">JavaScript is needed for the interactive preview. You can still <a href="https://github.com/astrobleem/oemdisplay-tandy/tree/main/docs/FONTS">view the font specimens on GitHub</a>.</p></noscript>
     <p id="load-status" class="notice" role="status">Loading the font files…</p>
@@ -32,6 +32,7 @@
           <option value="XTEFIX">Fixed · 8 × 10 · XTEFIX</option>
           <option value="XTEOEM">OEM · 8 × 8 · XTEOEM</option>
           <option value="XTTSYS">Text System · 8 × 8 · XTTSYS</option>
+          <option value="CG6HELV">Helv · 8 px · CG6HELV</option>
           </optgroup>
           <optgroup label="Compact CGA · 5 and 6 rows">
             <option value="CG1SYS">System · 5 px · CG1SYS</option>
@@ -41,6 +42,14 @@
             <option value="CG1OEM">OEM · 4 × 6 · CG1OEM</option>
             <option value="CG2SYS">System · 6 px · CG2SYS</option>
             <option value="CG2HELV">Helv · 6 px · CG2HELV</option>
+          </optgroup>
+          <optgroup label="Proportional Tandy · 8 and 12 rows">
+            <option value="T1P8">Tandy I · 8 px · T1P8</option>
+            <option value="T1P12">Tandy I · 12 px · T1P12</option>
+            <option value="T2P8">Tandy II · 8 px · T2P8</option>
+            <option value="T2P12">Tandy II · 12 px · T2P12</option>
+            <option value="TKP8">Tandy 2K · 8 px · TKP8</option>
+            <option value="TKP12">Tandy 2K · 12 px · TKP12</option>
           </optgroup>
         </select>
         <div class="control-pair"><div><label for="scale">Zoom</label><select id="scale"><option value="1">1× · native pixels</option><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option><option value="6">6×</option></select></div>
@@ -55,7 +64,7 @@ Aa Bb Cc 0123456789  !?&amp;@#%</textarea>
       </div>
       <div class="preview-panel"><div class="panel-bar"><span>LIVE PREVIEW</span><span id="preview-size"></span></div>
         <div class="preview-scroll" tabindex="0" aria-label="Text preview; scroll for long lines"><canvas id="preview" role="img" aria-label="Bitmap font preview"></canvas></div>
-        <div class="font-description"><h2 id="font-title">System</h2><p id="font-description"></p><dl id="metrics"></dl>
+        <div class="font-description"><h2 id="font-title">System</h2><p id="font-description"></p><dl id="metrics"></dl><p id="font-license" class="small"></p>
           <a id="download" class="download" href="fonts/XTCSYS.FON" download>Original XTCSYS.FON <span aria-hidden="true">↗</span></a>
         </div>
       </div>
@@ -75,13 +84,14 @@ Aa Bb Cc 0123456789  !?&amp;@#%</textarea>
         </aside>
       </div>
     </section>
-    <section class="compare-section" aria-labelledby="compare-heading"><div class="section-title"><div><p class="eyebrow">SIDE BY SIDE</p><h2 id="compare-heading">Same words. Fourteen files.</h2></div><p>Your first line in every font, including your edits, at 2×.</p></div><div id="comparisons" class="comparisons"></div></section>
+    <section class="compare-section" aria-labelledby="compare-heading"><div class="section-title"><div><p class="eyebrow">SIDE BY SIDE</p><h2 id="compare-heading">Same words. Twenty-one files.</h2></div><p>Your first line in every font, including your edits, at 2×.</p></div><div id="comparisons" class="comparisons"></div></section>
     <section class="notes"><h2>Your pixels, the original font structure</h2>
-      <p>The seven XT Pixels R10 files come from the Windows XT distribution. The seven compact CGA files come from its current CGA packet: 5-row System, Helv and Courier, 4 × 6 Fixed and OEM, and 6-row System and Helv. Previews decode those exact .FON assets at integer zoom with square pixels. They are not CRT simulations or Windows screenshots.</p>
+      <p>The seven XT Pixels R10 files come from the Windows XT distribution. The CGA packet adds seven compact 5/6-row fonts and the full-coverage 8-row CG6HELV. Six proportional application fonts add XT Tandy I, XT Tandy II and XT Tandy 2K at 8 and 12 rows. They do not replace System, Fixed or Terminal. Previews decode the exact .FON assets at integer zoom with square pixels; they are not CRT simulations or Windows screenshots.</p>
       <p>Edits stay in this tab while you switch fonts. Download every edited font you want to keep before closing or refreshing. Nothing is uploaded or installed. Downloads use a new 8.3 filename ending in E; original downloads remain untouched. Undo, redo and both reset buttons operate on the selected font.</p>
       <p>Exports change only glyph bitmap bits. Character widths, height, leading, encoding, resource IDs, face names and the Windows FNT/FONTDIR/NE structure are preserved. An unchanged export is byte-identical to its source. These copies retain the original internal font identities: keep backups and test in a separate Windows installation before replacing a system font. Edited copies have not been runtime-qualified in Windows.</p>
-      <p>ANSI and OEM/CP437 bytes are different. The compact CGA fonts draw ASCII; compact OEM also draws box and block characters. Other in-range bytes contain placeholder boxes you can edit. Out-of-range characters use each font’s default byte, shown in the preview warning. Euro and emoji are not part of these encodings. The atlas displays all 256 byte inputs, including substitutions.</p>
+      <p>ANSI and OEM/CP437 bytes are different. The compact CG1/CG2 fonts draw ASCII; compact OEM also draws box and block characters. Other in-range bytes contain placeholder boxes you can edit. Out-of-range characters use each font’s default byte, shown in the preview warning. CG6HELV retains the full XT Pixels ANSI artwork. The new Tandy faces map CP437 artwork into Windows ANSI, with XT Pixels artwork for ANSI characters missing from CP437. Euro and emoji are not part of these encodings. The atlas displays all 256 byte inputs, including substitutions.</p>
       <p>XTEOEM and XTCOEM start byte-identical and can be edited separately. XTTSYS is the fixed text-mode System font; its presence does not qualify experimental text-mode display.</p>
+      <p>The six T1P/T2P/TKP files adapt VileR’s <a href="https://int10h.org/oldschool-pc-fonts/">Oldschool PC Font Pack v2.2</a>: blank side bearings are removed, one spacing pixel is added, and the 12-row versions use a vertical row map. Keep the <a href="fonts/TANDYLIC.TXT" download>Tandy CC BY-SA 4.0 notice</a> and <a href="fonts/LICENSE.TXT" download>XT Pixels MIT notice</a> with these files. Identify any further changes when sharing edited copies. The other 15 fonts retain their MIT notice.</p>
       <p><a href="https://github.com/astrobleem/oemdisplay-tandy/tree/main/tools/XTFONTS">XT Pixels source</a> <span>·</span> <a href="https://github.com/astrobleem/oemdisplay-tandy/blob/main/src/cga/CGAFONT.PY">Compact CGA source</a> <span>·</span> <a href="fonts/LICENSE.TXT">MIT license</a></p>
     </section>
   </main>

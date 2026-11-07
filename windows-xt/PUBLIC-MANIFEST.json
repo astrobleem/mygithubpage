@@ -83,9 +83,49 @@
       "sha256": "c0ac9e8753e6b13b5bf0faa5384c85daf94427d813485a47270a62333bbfd222"
     },
     {
+      "path": "fonts/fonts/CG6HELV.FON",
+      "bytes": 4256,
+      "sha256": "d3bccab5f5daea935ca568923d5274315301f93caffd50e2cdcdd4d59735842d"
+    },
+    {
       "path": "fonts/fonts/LICENSE.TXT",
       "bytes": 1101,
       "sha256": "b7b5b82f34c6a21e5f680e983af2dc628b9bd913363a7ffc6087cd1486201c80"
+    },
+    {
+      "path": "fonts/fonts/T1P12.FON",
+      "bytes": 5360,
+      "sha256": "ff759edfd53a8ee2a4e6da09d64084876bddaab2123b43b4ac68283ee31c4ede"
+    },
+    {
+      "path": "fonts/fonts/T1P8.FON",
+      "bytes": 4384,
+      "sha256": "fc4d1e08f34ce1534dac575762376b6453a221951c7993c1d8c159df5f64b71f"
+    },
+    {
+      "path": "fonts/fonts/T2P12.FON",
+      "bytes": 5264,
+      "sha256": "d7d854c9a9ca510965cda0eef8a5a10cf6d11752b3de070fe07aa868d720543d"
+    },
+    {
+      "path": "fonts/fonts/T2P8.FON",
+      "bytes": 4304,
+      "sha256": "dc247ceabacde6d7fed5004d8e783e4283675a07e09328bd483256f4a476e54f"
+    },
+    {
+      "path": "fonts/fonts/TANDYLIC.TXT",
+      "bytes": 20133,
+      "sha256": "9348ddfd44da5a127c59141981954746a860ec8e03e0412cf3af7134af0f97e2"
+    },
+    {
+      "path": "fonts/fonts/TKP12.FON",
+      "bytes": 5184,
+      "sha256": "2caf312a5d7397b4862a45e951ba8eaa559a2fcb627f51dcf75abbb044d446ef"
+    },
+    {
+      "path": "fonts/fonts/TKP8.FON",
+      "bytes": 4256,
+      "sha256": "43399f3e363ad0608960effc2fe2ae836166756f21a7fff459af33419e1e0c64"
     },
     {
       "path": "fonts/fonts/XTCFIX.FON",
@@ -124,8 +164,8 @@
     },
     {
       "path": "fonts/index.html",
-      "bytes": 8929,
-      "sha256": "bd427ec2914805adfb4660f9b34c8ec8d92a28ba894baaf36b4e9cf51f8ef007"
+      "bytes": 10306,
+      "sha256": "2ab651173ae8434062c0299c1c93e8001e6e9812ca37cf4b46fe0b875e148640"
     },
     {
       "path": "fonts/style.css",
@@ -134,13 +174,13 @@
     },
     {
       "path": "fonts/viewer.js",
-      "bytes": 21843,
-      "sha256": "7abda2e9ca2a9262b20a45671e987b78dbc19ec8e09e11227bed66e8e8bf9cd0"
+      "bytes": 23741,
+      "sha256": "f59c4ab82b12a9a75428810f05a2d6cebc56fcbd1d0f73058049ad8add250475"
     },
     {
       "path": "index.html",
-      "bytes": 9939,
-      "sha256": "58fa6adc582134d63ea0e77a8444cc2d446319eae7a0b49145b9ecfa9bcc2715"
+      "bytes": 9959,
+      "sha256": "25b3a8c21e24db0ab374c1bac72df888a1a5a955ff3e67f9ba81b7ecbb59dddc"
     },
     {
       "path": "input.mjs",

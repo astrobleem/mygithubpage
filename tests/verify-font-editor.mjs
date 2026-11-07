@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 const root = new URL('../windows-xt/fonts/', import.meta.url);
 const read = name => fs.readFileSync(new URL(name, root));
 const names = ['XTCSYS', 'XTCFIX', 'XTCOEM', 'XTESYS', 'XTEFIX', 'XTEOEM', 'XTTSYS',
-  'CG1SYS', 'CG2SYS', 'CG1FIX', 'CG1OEM', 'CG1COUR', 'CG1HELV', 'CG2HELV'];
+  'CG1SYS', 'CG2SYS', 'CG1FIX', 'CG1OEM', 'CG1COUR', 'CG1HELV', 'CG2HELV', 'CG6HELV',
+  'T1P8', 'T1P12', 'T2P8', 'T2P12', 'TKP8', 'TKP12'];
 const context = vm.createContext({TextDecoder});
 vm.runInContext(read('font.js').toString(), context);
 const {parse, edit, encode, character} = context.XTFont;

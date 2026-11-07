@@ -18,7 +18,14 @@
     CG1FIX: ['Compact Fixed / 4 × 6', 'Four-pixel fixed advance and six rows, including room for descenders. ASCII artwork with extended placeholders.'],
     CG1OEM: ['Compact OEM / 4 × 6', 'ASCII plus full-cell CP437 box drawing, shades and blocks. Other extended and control-picture bytes are placeholder boxes.'],
     CG2SYS: ['Compact System / 6 px', 'Six-row proportional CGA System. Average width 4 px, with wider M/W forms.'],
-    CG2HELV: ['Compact Helv / 6 px', 'Six-row proportional CGA Helv. ASCII artwork and the original fixed dialog metrics.']
+    CG2HELV: ['Compact Helv / 6 px', 'Six-row proportional CGA Helv. ASCII artwork and the original fixed dialog metrics.'],
+    CG6HELV: ['Helv / 8 px', 'The existing proportional CGA640 Helv. Full XT Pixels ANSI artwork, with blank side bearings removed and its original widths preserved.'],
+    T1P8: ['Tandy I / 8 px', 'XT Tandy I: classic Tandy 1000 Video I artwork, with true proportional spacing. Optional application font; system defaults stay unchanged.'],
+    T1P12: ['Tandy I / 12 px', 'XT Tandy I at 12 rows, using a deliberate vertical row map and the same proportional advances as its 8-row companion.'],
+    T2P8: ['Tandy II / 8 px', 'XT Tandy II: classic Tandy 1000 Video II artwork, with true proportional spacing. Optional application font; system defaults stay unchanged.'],
+    T2P12: ['Tandy II / 12 px', 'XT Tandy II at 12 rows, using a deliberate vertical row map and the same proportional advances as its 8-row companion.'],
+    TKP8: ['Tandy 2K / 8 px', 'XT Tandy 2K: lighter Tandy 2000 graphics artwork, trimmed to proportional advances with one pixel of spacing.'],
+    TKP12: ['Tandy 2K / 12 px', 'XT Tandy 2K at 12 rows: lighter artwork, a deliberate vertical row map and the same proportional advances as its 8-row companion.']
   };
   const themes = {paper: ['#253325', '#fffef7'], terminal: ['#b9f68a', '#17251b'], windows: ['#ffffff', '#000080']};
   const samples = {
@@ -61,7 +68,7 @@
     return {width, height, clipped: clipped || tooWide};
   }
   function originalPlaceholder(name, byte, font) {
-    if (!name.startsWith('CG')) return XTFont.character(byte, font.charset) === null;
+    if (!name.startsWith('CG1') && !name.startsWith('CG2')) return XTFont.character(byte, font.charset) === null;
     return !(byte >= 32 && byte <= 126 || font.charset === 255 && byte >= 176 && byte <= 223);
   }
   function describeByte(byte, font) {
@@ -89,7 +96,7 @@
     if (!editor.isSaved && $('export-status').textContent.startsWith('Download requested:'))
       $('export-status').textContent = 'New edits since the last download. Download again to keep them.';
     const other = [...editors.values()].filter(e => e !== editor && e.dirtyGlyphCount).length;
-    $('edit-status').textContent = `${editor.dirtyGlyphCount} changed glyph${editor.dirtyGlyphCount === 1 ? '' : 's'} · ${editor.dirtyPixelCount} pixels different from original.` +
+    $('edit-status').textContent = `${editor.dirtyGlyphCount} changed glyph${editor.dirtyGlyphCount === 1 ? '' : 's'} · ${editor.dirtyPixelCount} pixel${editor.dirtyPixelCount === 1 ? '' : 's'} different from original.` +
       (other ? ` Edits also kept in ${other} other font${other === 1 ? '' : 's'}.` : '');
     $('edit-warning').textContent = !editable ? `Preview only: byte ${hex(selected)} is outside this font’s range. Select ${hex(glyph.code)} to edit its shared default glyph.` :
       editor.isGlyphDirty(selected) ? 'Custom glyph. Reset restores its original pixels.' :
@@ -190,6 +197,14 @@
     const font = fonts.get(name);
     $('font-title').textContent = descriptions[name][0];
     $('font-description').textContent = descriptions[name][1];
+    const license = $('font-license'); license.replaceChildren();
+    const tandy = /^(T1P|T2P|TKP)/.test(name);
+    license.append(tandy ? 'VileR Tandy artwork · CC BY-SA 4.0; additional XT Pixels artwork · MIT. ' : 'Original XT Pixels artwork · MIT. ');
+    const notice = document.createElement('a'); notice.href = tandy ? 'fonts/TANDYLIC.TXT' : 'fonts/LICENSE.TXT';
+    notice.textContent = tandy ? 'Tandy license' : 'MIT notice'; notice.download = ''; license.append(notice);
+    if (tandy) {
+      license.append(' · '); const mit = document.createElement('a'); mit.href = 'fonts/LICENSE.TXT'; mit.textContent = 'MIT notice'; mit.download = ''; license.append(mit);
+    }
     $('download').href = `fonts/${name}.FON`; $('download').textContent = `Original ${name}.FON ↗`;
     $('metrics').replaceChildren();
     const metrics = [['Cell height', `${font.height} px`], ['Width', font.fixedWidth ? `${font.fixedWidth} px fixed` : 'Proportional'],
@@ -238,7 +253,7 @@
   });
   for (const button of document.querySelectorAll('[data-sample]')) button.addEventListener('click', () => {
     $('sample').value = samples[button.dataset.sample];
-    if (button.dataset.sample === 'oem' && fonts.has('XTCOEM')) { $('font').value = current?.startsWith('CG') && fonts.has('CG1OEM') ? 'CG1OEM' : 'XTCOEM'; selectFont(); }
+    if (button.dataset.sample === 'oem' && fonts.has('XTCOEM')) { $('font').value = /^CG[12]/.test(current) && fonts.has('CG1OEM') ? 'CG1OEM' : 'XTCOEM'; selectFont(); }
     else renderText();
   });
   function gridPoint(event) {
