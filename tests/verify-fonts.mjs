@@ -53,7 +53,7 @@ assert.ok(read('fonts/XTCOEM.FON').equals(read('fonts/XTEOEM.FON')));
 assert.equal(fontAPI.encode('╔═╗☺',fontAPI.parse(read('fonts/XTCOEM.FON'))).lines[0].join(','),'201,205,187,1');
 const html=read('index.html').toString();
 assert.match(html,/script-src 'self';/);assert.ok(!html.includes('unsafe-eval'));
-assert.match(html,/src="font\.js\?v=5"/);assert.match(html,/src="viewer\.js\?v=5"/);assert.match(html,/href="style\.css\?v=5"/);
+assert.match(html,/src="font\.js\?v=5"/);assert.match(html,/src="viewer\.js\?v=6"/);assert.match(html,/href="style\.css\?v=5"/);
 assert.match(html,/href="\.\.\/"/);assert.match(html,/maxlength="1000"/);
 const ids=[...html.matchAll(/id="([^"]+)"/g)].map(x=>x[1]);
 class Element {
@@ -84,10 +84,10 @@ async function ui(failed=[]) {
   return {get,buttons,failed,downloads,windowEvents,requests};
 }
 const {get,buttons,downloads,windowEvents,requests}=await ui();
-assert.ok(requests.includes('fonts/XTCSYS.FON?rev=cap5'));
+for(const name of ['CG1SYS','CG2SYS','XTCSYS','XTESYS']) assert.ok(requests.includes(`fonts/${name}.FON?rev=system6`));
 for(const name of optionalFonts) assert.ok(requests.includes(`fonts/${name}.FON?rev=fontres1`));
 assert.equal(get('font').disabled,false);assert.equal(get('atlas').children.length,256);assert.equal(get('comparisons').children.length,21);
-for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));if(name==='XTCSYS')assert.equal(get('download').href,'fonts/XTCSYS.FON?rev=cap5');if(optionalFonts.includes(name))assert.equal(get('download').href,`fonts/${name}.FON?rev=fontres1`);}
+for(const name of names) {get('font').value=name;get('font').events.change();assert.match(get('download').href,new RegExp(name));if(['CG1SYS','CG2SYS','XTCSYS','XTESYS'].includes(name))assert.equal(get('download').href,`fonts/${name}.FON?rev=system6`);if(optionalFonts.includes(name))assert.equal(get('download').href,`fonts/${name}.FON?rev=fontres1`);}
 get('sample').value='€😀';get('sample').events.input();assert.match(get('missing').textContent,/Outside this encoding/);
 get('font').value='XTCSYS';get('font').events.change();buttons[2].events.click();assert.equal(get('font').value,'XTCOEM');assert.match(get('missing').textContent,/All characters/);
 get('byte').value='FF';get('byte').events.input();assert.match(get('glyph-name').textContent,/Fallback/);

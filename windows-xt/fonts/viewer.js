@@ -5,19 +5,19 @@
   const fonts = new Map(), editors = new Map();
   const names = Array.from($('font').options, option => option.value);
   const descriptions = {
-    XTCSYS: ['System / 8 px', 'Corrected capital M and W use 7-pixel ink and 9-pixel advances. I, J, C, E and S have one extra blank advance pixel to preserve Windows’ 8 × 8 dialog base units. The short System strike for XTC graphics profiles.'],
+    XTCSYS: ['System / 8 px', 'Corrected capital M and W use 7-pixel ink and 9-pixel advances. I, J, C, E and S have one extra blank advance pixel to preserve Windows’ 8 × 8 dialog base units. Current published eight-row System artwork for XTC graphics profiles; existing metrics are preserved.'],
     XTCFIX: ['Fixed / 8 × 8', 'Fixed-width ANSI characters, with one extra pixel of external line spacing.'],
     XTCOEM: ['OEM / 8 × 8', 'CP437 characters with full-cell box drawing, shades, blocks and control pictures.'],
-    XTESYS: ['System / 12 px', 'The taller proportional System strike in the XTE family.'],
+    XTESYS: ['System / 12 px', 'Current published twelve-row proportional System artwork for XTE graphics, with its existing advances and dialog metrics.'],
     XTEFIX: ['Fixed / 8 × 10', 'The taller fixed-width ANSI strike in the XTE family.'],
     XTEOEM: ['OEM / 8 × 8', 'The XTE OEM alias contains exactly the same font bytes as XTCOEM.'],
     XTTSYS: ['Text System / 8 × 8', 'The fixed System strike supplied for text-mode use. Previewed independently of experimental text-mode display.'],
-    CG1SYS: ['Compact System / 5 px', 'Proportional 5-row CGA System, averaging 3 pixels wide. ASCII artwork; extended bytes have placeholder boxes.'],
+    CG1SYS: ['Compact System / 5 px', 'Current published five-row CGA System artwork with preserved advances. ASCII artwork; extended bytes retain their placeholder boxes.'],
     CG1HELV: ['Compact Helv / 5 px', 'Proportional 5-row CGA Helv, averaging 3 pixels wide. The smallest UI strike in the current CGA packet.'],
     CG1COUR: ['Compact Courier / 4 × 5', 'Four-pixel fixed advance and five bitmap rows. Original compact CGA ASCII artwork.'],
     CG1FIX: ['Compact Fixed / 4 × 6', 'Four-pixel fixed advance and six rows, including room for descenders. ASCII artwork with extended placeholders.'],
     CG1OEM: ['Compact OEM / 4 × 6', 'ASCII plus full-cell CP437 box drawing, shades and blocks. Other extended and control-picture bytes are placeholder boxes.'],
-    CG2SYS: ['Compact System / 6 px', 'Six-row proportional CGA System. Average width 4 px, with wider M/W forms.'],
+    CG2SYS: ['Compact System / 6 px', 'Current published six-row proportional CGA System artwork, with preserved widths and a distinct boxed zero. The generic standard 320 Setup choice still selects XTC; CG2 serves the existing dedicated profile.'],
     CG2HELV: ['Compact Helv / 6 px', 'Six-row proportional CGA Helv. ASCII artwork and the original fixed dialog metrics.'],
     CG6HELV: ['Helv / 8 px', 'The existing proportional CGA640 Helv. Full XT Pixels ANSI artwork, with blank side bearings removed and its original widths preserved.'],
     T1P8: ['Tandy I / 8 px', 'XT Tandy I: classic Tandy 1000 Video I artwork, with true proportional spacing. Optional application font; system defaults stay unchanged.'],
@@ -28,7 +28,8 @@
     TKP12: ['Tandy 2K / 12 px', 'XT Tandy 2K at 12 rows: lighter artwork, a deliberate vertical row map and the same proportional advances as its 8-row companion.']
   };
   const installableFonts = new Set(['CG1HELV', 'CG2HELV', 'CG6HELV', 'T1P8', 'T1P12', 'T2P8', 'T2P12', 'TKP8', 'TKP12']);
-  const fontURL = name => `fonts/${name}.FON${name === 'XTCSYS' ? '?rev=cap5' : installableFonts.has(name) ? '?rev=fontres1' : ''}`;
+  const systemFonts = new Set(['CG1SYS', 'CG2SYS', 'XTCSYS', 'XTESYS']);
+  const fontURL = name => `fonts/${name}.FON${systemFonts.has(name) ? '?rev=system6' : installableFonts.has(name) ? '?rev=fontres1' : ''}`;
   const themes = {paper: ['#253325', '#fffef7'], terminal: ['#b9f68a', '#17251b'], windows: ['#ffffff', '#000080']};
   const samples = {
     desktop: 'Windows XT\nFile  Edit  View  Help\nOpen a document\nSave changes?\n[ OK ]  [ Cancel ]',
